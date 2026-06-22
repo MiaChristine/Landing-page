@@ -2084,12 +2084,14 @@ function submitEnterprise() {
 
   fetch(ZAPIER_WEBHOOK_URL, {
     method: 'POST',
-    mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
-  .then(function() {
+  .then(function(response) {
     setSubmitLoading(btn, false);
+    if (!response.ok) {
+      console.error('Webhook responded with status:', response.status);
+    }
     document.getElementById('demo-form-view').style.display = 'none';
     document.getElementById('enterprise-confirm-view').classList.add('open');
     window.scrollTo(0, 0);
@@ -2139,12 +2141,14 @@ function submitBeta() {
 
   fetch(ZAPIER_WEBHOOK_URL, {
     method: 'POST',
-    mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
-  .then(function() {
+  .then(function(response) {
     setSubmitLoading(btn, false);
+    if (!response.ok) {
+      console.error('Webhook responded with status:', response.status);
+    }
     document.getElementById('bcv-email-display').textContent = email;
     document.getElementById('demo-form-view').style.display = 'none';
     document.getElementById('beta-confirm-view').classList.add('open');
