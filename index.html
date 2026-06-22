@@ -124,6 +124,15 @@ body {
   box-shadow: var(--sh-cta);
 }
 .btn-nav-cta:hover { box-shadow: 0 10px 30px rgba(22,113,100,0.45); transform: translateY(-1px); }
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 6px 10px; border-radius: 99px;
+  font-family: var(--font-b); font-size: 12px; font-weight: 700;
+  color: var(--on-surf-v); background: var(--surf-mid);
+  text-decoration: none; transition: background 0.15s;
+}
+.lang-switch:hover { background: var(--surf-high); color: var(--on-surf); }
+.lang-switch .icon-xs { font-size: 15px; margin-right: 3px; }
 
 /* ━━━ HERO ━━━ */
 .hero {
@@ -985,6 +994,7 @@ body {
       <a class="lp-nav-link" href="#features">Features</a>
       <a class="lp-nav-link" href="#story">Stories</a>
       <a class="lp-nav-link" href="#how">How it Works</a>
+      <a class="lang-switch" href="index-fr.html"><span class="icon-xs icon">language</span>FR</a>
       <button class="btn lp-nav-link" onclick="openModal('login')">Log in</button>
       <button class="btn btn-nav-cta" onclick="showDemoPage()">Try Live Demo</button>
     </div>
