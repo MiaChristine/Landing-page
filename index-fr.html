@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Palpawble — Navigation compatissante en soins pour animaux</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   TOKENS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root {
+  --primary:      #167164;
+  --primary-dim:  #006458;
+  --primary-deep: #004840;
+  --primary-fix:  #A1F2E2;
+  --primary-on:   #00483F;
+  --secondary:    #466976;
+  --sec-cont:     #C4E8F7;
+  --tertiary:     #8B5840;
+  --tert-cont:    #FDBA9D;
+  --on-tert-cont: #633621;
+  --on-tert-fv:   #6E3F29;
+  --bg:           #FFFCF7;
+  --surf-low:     #FCF9F3;
+  --surf-mid:     #F6F3ED;
+  --surf-high:    #F0EEE6;
+  --surf-top:     #EAE8E0;
+  --white:        #FFFFFF;
+  --on-surf:      #383833;
+  --on-surf-v:    #65655E;
+  --outline-v:    #BBB9B2;
+  --emergency:    #FA746F;
+  /* Sidebar = brand primary #167164 */
+  --sidebar-bg:   #167164;
+  --sidebar-deep: #0d5249;
+  --sidebar-hover:#1a8578;
+  --font-h: 'Plus Jakarta Sans', sans-serif;
+  --font-b: 'Manrope', sans-serif;
+  --sh-card:  0 2px 20px rgba(56,56,51,0.08);
+  --sh-float: 0 12px 40px rgba(56,56,51,0.13);
+  --sh-cta:   0 8px 28px rgba(22,113,100,0.32);
+  --sidebar-w: 256px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESET
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--on-surf);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   UTILITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.icon {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  font-size: 22px; line-height: 1;
+  display: inline-block; vertical-align: middle;
+  user-select: none;
+}
+.icon-fill { font-variation-settings: 'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24; }
+.icon-sm { font-size: 18px; } .icon-xs { font-size: 15px; } .icon-lg { font-size: 32px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; border: none; cursor: pointer;
+  font-family: var(--font-h); font-weight: 700;
+  transition: all 0.2s; white-space: nowrap; text-decoration: none;
+}
+.btn:active { transform: scale(0.97); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   VIEWS (landing vs app)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#landing { display: block; }
+#app     { display: none; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ███████╗ LANDING PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* NAV */
+.lp-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 0 60px;
+  height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,252,247,0.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(187,185,178,0.15);
+  transition: background 0.3s;
+}
+.lp-nav-logo {
+  display: flex; align-items: center; gap: 10px; text-decoration: none;
+}
+.lp-nav-logo-icon {
+  width: 38px; height: 38px; background: var(--primary);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+}
+.lp-nav-logo-icon .icon { color: #fff; font-size: 20px; }
+.lp-nav-logo-text { font-family: var(--font-h); font-size: 18px; font-weight: 800; color: var(--on-surf); letter-spacing: -0.025em; }
+.lp-nav-links { display: flex; align-items: center; gap: 6px; }
+.lp-nav-link {
+  padding: 8px 16px; border-radius: 99px;
+  font-family: var(--font-b); font-size: 14px; font-weight: 600;
+  color: var(--on-surf-v); background: none; border: none; cursor: pointer;
+  transition: all 0.15s; text-decoration: none;
+}
+.lp-nav-link:hover { background: var(--surf-mid); color: var(--on-surf); }
+.btn-nav-cta {
+  height: 42px; padding: 0 22px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+  color: #fff; border-radius: 99px; font-size: 14px;
+  box-shadow: var(--sh-cta);
+}
+.btn-nav-cta:hover { box-shadow: 0 10px 30px rgba(22,113,100,0.45); transform: translateY(-1px); }
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 6px 10px; border-radius: 99px;
+  font-family: var(--font-b); font-size: 12px; font-weight: 700;
+  color: var(--on-surf-v); background: var(--surf-mid);
+  text-decoration: none; transition: background 0.15s;
+}
+.lang-switch:hover { background: var(--surf-high); color: var(--on-surf); }
+.lang-switch .icon-xs { font-size: 15px; margin-right: 3px; }
+
+/* ━━━ HERO ━━━ */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 100px 60px 60px;
+  gap: 60px;
+  position: relative;
+  overflow: hidden;
+}
+/* Organic background blobs */
+.hero::before {
+  content: '';
+  position: absolute;
+  right: -100px; top: -80px;
+  width: 600px; height: 600px;
+  background: radial-gradient(ellipse, rgba(22,113,100,0.09) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  left: -80px; bottom: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse, rgba(253,186,157,0.14) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-text { position: relative; z-index: 2; }
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--primary-fix);
+  color: var(--primary-on);
+  border-radius: 99px; padding: 7px 16px;
+  font-family: var(--font-b); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero-eyebrow .icon-xs { font-size: 14px; }
+
+.hero-h1 {
+  font-family: var(--font-h);
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--on-surf);
+  margin-bottom: 24px;
+}
+.hero-h1 em {
+  font-style: italic;
+  color: var(--primary);
+  font-weight: 800;
+}
+.hero-h1 .hero-line2 { display: block; }
+
+.hero-sub {
+  font-size: 18px; font-weight: 400;
+  color: var(--on-surf-v);
+  line-height: 1.65;
+  max-width: 480px;
+  margin-bottom: 36px;
+}
+
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 44px; }
+.btn-hero-primary {
+  height: 56px; padding: 0 32px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+  color: #fff; border-radius: 99px; font-size: 16px;
+  box-shadow: var(--sh-cta);
+}
+.btn-hero-primary:hover { box-shadow: 0 12px 36px rgba(22,113,100,0.45); transform: translateY(-2px); }
+.btn-hero-ghost {
+  height: 56px; padding: 0 28px;
+  background: var(--white); color: var(--on-surf);
+  border-radius: 99px; font-size: 16px;
+  box-shadow: var(--sh-card);
+}
+.btn-hero-ghost:hover { background: var(--surf-mid); }
+
+/* Trust indicators */
+.hero-trust { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.trust-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; color: var(--on-surf-v); font-weight: 500;
+}
+.trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary-fix); }
+
+/* Hero visual — app mockup card */
+.hero-visual { position: relative; z-index: 2; display: flex; justify-content: center; }
+.mockup-card {
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow: 0 24px 80px rgba(56,56,51,0.16), 0 4px 16px rgba(56,56,51,0.08);
+  overflow: hidden;
+  width: 100%;
+  max-width: 460px;
+  transform: perspective(1000px) rotateY(-6deg) rotateX(2deg);
+  transition: transform 0.5s ease;
+}
+.mockup-card:hover { transform: perspective(1000px) rotateY(-2deg) rotateX(1deg); }
+
+/* Mockup inner */
+.mockup-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+  padding: 20px 22px 18px;
+  position: relative; overflow: hidden;
+}
+.mockup-header-deco {
+  position: absolute; right: -20px; top: -20px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: rgba(255,255,255,0.07); pointer-events: none;
+}
+.mockup-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.mockup-logo-dot { width: 28px; height: 28px; background: rgba(255,255,255,0.2); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+.mockup-logo-dot .icon { color: var(--primary-fix); font-size: 15px; }
+.mockup-logo-name { font-family: var(--font-h); font-size: 14px; font-weight: 800; color: #fff; }
+.mockup-pet { display: flex; align-items: center; gap: 12px; }
+.mockup-avatar { width: 48px; height: 48px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.mockup-pet-name { font-family: var(--font-h); font-size: 16px; font-weight: 800; color: #fff; }
+.mockup-pet-sub { font-size: 11px; color: rgba(255,255,255,0.65); }
+.mockup-score-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.mockup-score-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 500; }
+.mockup-score-val { font-family: var(--font-h); font-size: 13px; font-weight: 800; color: var(--primary-fix); }
+.mockup-bar-track { height: 5px; background: rgba(255,255,255,0.2); border-radius: 99px; overflow: hidden; margin-top: 5px; }
+.mockup-bar-fill { height: 100%; width: 87%; background: var(--primary-fix); border-radius: 99px; }
+
+.mockup-body { padding: 18px 22px; }
+.mockup-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+.mockup-stat { background: var(--surf-low); border-radius: 10px; padding: 10px; text-align: center; }
+.mockup-stat-n { font-family: var(--font-h); font-size: 16px; font-weight: 800; color: var(--primary); }
+.mockup-stat-l { font-size: 9px; font-weight: 600; color: var(--on-surf-v); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+.mockup-card-mini {
+  background: var(--surf-mid); border-radius: 12px; padding: 12px 14px;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+}
+.mockup-card-mini-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mockup-card-mini-title { font-family: var(--font-h); font-size: 12px; font-weight: 700; color: var(--on-surf); }
+.mockup-card-mini-sub { font-size: 10px; color: var(--on-surf-v); }
+.mockup-card-mini-val { margin-left: auto; font-family: var(--font-h); font-size: 13px; font-weight: 800; color: var(--primary); }
+
+/* Floating badge */
+.hero-badge-float {
+  position: absolute;
+  bottom: -16px; left: -24px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 28px rgba(56,56,51,0.15);
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-b);
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.hero-badge-float-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; }
+.hero-badge-float-icon .icon { color: var(--primary); font-size: 18px; }
+.hero-badge-float-title { font-size: 12px; font-weight: 700; color: var(--on-surf); }
+.hero-badge-float-sub { font-size: 10px; color: var(--on-surf-v); }
+
+.hero-badge-float2 {
+  position: absolute;
+  top: 32px; right: -20px;
+  background: var(--primary);
+  border-radius: 16px;
+  padding: 10px 16px;
+  box-shadow: 0 8px 28px rgba(22,113,100,0.35);
+  display: flex; align-items: center; gap: 8px;
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+.hero-badge-float2 .icon { color: var(--primary-fix); font-size: 18px; }
+.hero-badge-float2-text { font-family: var(--font-h); font-size: 12px; font-weight: 700; color: #fff; }
+.hero-badge-float2-sub { font-size: 10px; color: rgba(255,255,255,0.7); }
+
+/* ━━━ STATS STRIP ━━━ */
+.stats-strip {
+  background: var(--primary);
+  padding: 52px 60px;
+}
+.stats-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 40px; align-items: center;
+}
+.stat-big { text-align: center; }
+.stat-big-num {
+  font-family: var(--font-h);
+  font-size: 48px; font-weight: 800;
+  color: #fff; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 8px;
+}
+.stat-big-num span { color: var(--primary-fix); }
+.stat-big-label { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; line-height: 1.45; }
+.stats-divider { height: 60px; width: 1px; background: rgba(255,255,255,0.15); margin: 0 auto; }
+
+/* ━━━ FEATURES ━━━ */
+.features {
+  padding: 100px 60px;
+  max-width: 1200px; margin: 0 auto;
+}
+.section-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-b); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--primary); margin-bottom: 16px;
+}
+.section-eyebrow::before { content: ''; width: 24px; height: 2px; background: var(--primary); border-radius: 99px; }
+.section-h2 {
+  font-family: var(--font-h); font-size: clamp(32px, 3.5vw, 48px);
+  font-weight: 800; letter-spacing: -0.03em;
+  color: var(--on-surf); margin-bottom: 16px; line-height: 1.1;
+}
+.section-h2 em { color: var(--primary); font-style: italic; }
+.section-sub {
+  font-size: 17px; color: var(--on-surf-v); line-height: 1.65;
+  max-width: 560px; margin-bottom: 64px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.feature-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: var(--sh-card);
+  transition: all 0.25s;
+  position: relative; overflow: hidden;
+}
+.feature-card:hover { transform: translateY(-6px); box-shadow: var(--sh-float); }
+.feature-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 24px;
+  border: 1.5px solid transparent;
+  transition: border-color 0.25s;
+  pointer-events: none;
+}
+.feature-card:hover::after { border-color: var(--primary-fix); }
+.feature-card-accent {
+  position: absolute; right: -16px; top: -16px;
+  width: 80px; height: 80px; border-radius: 50%;
+  filter: blur(20px); pointer-events: none;
+  opacity: 0.6;
+}
+.feature-icon-wrap {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.feature-title {
+  font-family: var(--font-h); font-size: 18px; font-weight: 700;
+  color: var(--on-surf); margin-bottom: 10px; line-height: 1.25;
+}
+.feature-desc {
+  font-size: 14px; color: var(--on-surf-v); line-height: 1.7;
+  margin-bottom: 20px;
+}
+.feature-learn {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--font-b); font-size: 13px; font-weight: 700;
+  color: var(--primary); background: none; border: none;
+  cursor: pointer; padding: 0;
+  transition: gap 0.2s;
+}
+.feature-learn:hover { gap: 9px; }
+.feature-learn .icon-xs { font-size: 16px; }
+
+/* Feature card large (spans 2 cols) */
+.feature-card-large {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: center;
+}
+.feature-card-large .feature-visual {
+  background: var(--surf-mid); border-radius: 16px;
+  padding: 24px; display: flex; flex-direction: column; gap: 8px;
+}
+.fv-row {
+  background: var(--white); border-radius: 10px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 1px 6px rgba(56,56,51,0.06);
+}
+.fv-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fv-title { font-family: var(--font-h); font-size: 12px; font-weight: 700; color: var(--on-surf); }
+.fv-sub   { font-size: 10px; color: var(--on-surf-v); }
+.fv-val   { margin-left: auto; font-family: var(--font-h); font-size: 13px; font-weight: 800; }
+
+/* ━━━ STORY (testimonial) ━━━ */
+.story-section {
+  background: var(--primary-deep);
+  position: relative; overflow: hidden;
+  padding: 100px 60px;
+}
+.story-bg-blob1 {
+  position: absolute; left: -80px; top: -80px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(161,242,226,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.story-bg-blob2 {
+  position: absolute; right: -60px; bottom: -60px;
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(253,186,157,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.story-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 480px;
+  gap: 80px; align-items: center;
+  position: relative; z-index: 2;
+}
+.story-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(161,242,226,0.15); color: var(--primary-fix);
+  border-radius: 99px; padding: 7px 16px;
+  font-family: var(--font-b); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.story-tag .icon-xs { font-size: 14px; color: var(--primary-fix); }
+.story-h2 {
+  font-family: var(--font-h); font-size: clamp(28px, 3vw, 42px);
+  font-weight: 800; letter-spacing: -0.025em;
+  color: #fff; margin-bottom: 28px; line-height: 1.12;
+}
+.story-h2 em { color: var(--primary-fix); font-style: italic; }
+.story-quote {
+  font-family: var(--font-h); font-size: 20px; font-weight: 300;
+  font-style: italic; color: rgba(255,255,255,0.82);
+  line-height: 1.65; margin-bottom: 32px;
+  border-left: 3px solid var(--primary-fix);
+  padding-left: 22px;
+}
+.story-steps { display: flex; flex-direction: column; gap: 16px; }
+.story-step {
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.story-step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h); font-size: 12px; font-weight: 700;
+  color: #fff; flex-shrink: 0; margin-top: 1px;
+}
+.story-step-text {
+  font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.6;
+}
+.story-step-text strong { color: #fff; font-weight: 600; }
+
+/* Story card */
+.story-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 28px; overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+.story-card-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dim) 100%);
+  padding: 24px 24px 0;
+  display: flex; align-items: center; gap: 14px;
+  position: relative; overflow: hidden;
+}
+.story-avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; flex-shrink: 0;
+}
+.story-person-name { font-family: var(--font-h); font-size: 16px; font-weight: 700; color: #fff; }
+.story-person-meta { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+.story-card-header-deco { position: absolute; right:-20px; top:-20px; width:80px; height:80px; background:rgba(255,255,255,0.06); border-radius:50%; pointer-events:none; }
+.story-card-phone-mock {
+  margin: 16px 24px 0;
+  background: rgba(255,255,255,0.1);
+  border-radius: 14px 14px 0 0;
+  padding: 14px 16px;
+}
+.scpm-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.scpm-dot { width: 8px; height: 8px; border-radius: 50%; }
+.scpm-bar { height: 8px; border-radius: 99px; flex: 1; }
+.scpm-text { font-size: 10px; color: rgba(255,255,255,0.6); margin-left: auto; }
+
+.story-card-body { padding: 22px 24px; }
+.story-timeline { display: flex; flex-direction: column; gap: 12px; }
+.stl-item {
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.stl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.stl-dot-line { position: relative; }
+.stl-dot-line::after { content:''; position:absolute; left:4px; top:12px; width:2px; height:calc(100% + 4px); background:rgba(255,255,255,0.1); }
+.stl-text { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.55; flex: 1; }
+.stl-text strong { color: #fff; font-weight: 600; }
+.stl-time { font-size: 10px; color: rgba(255,255,255,0.4); flex-shrink: 0; margin-top: 2px; }
+.story-outcome {
+  background: rgba(161,242,226,0.14);
+  border: 1px solid rgba(161,242,226,0.25);
+  border-radius: 12px; padding: 14px 16px;
+  margin-top: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.story-outcome-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.story-outcome-icon .icon { color: var(--primary); font-size: 16px; }
+.story-outcome-title { font-family: var(--font-h); font-size: 13px; font-weight: 700; color: var(--primary-fix); }
+.story-outcome-sub { font-size: 11px; color: rgba(161,242,226,0.65); margin-top: 1px; }
+
+/* ━━━ HOW IT WORKS ━━━ */
+.how-section {
+  padding: 100px 60px;
+  max-width: 1100px; margin: 0 auto;
+}
+.how-steps {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 0; position: relative; margin-top: 60px;
+}
+.how-steps::before {
+  content: '';
+  position: absolute;
+  top: 26px; left: 60px; right: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-fix), var(--primary), var(--primary-fix));
+  opacity: 0.3;
+  z-index: 0;
+}
+.how-step {
+  text-align: center; padding: 0 20px;
+  position: relative; z-index: 1;
+}
+.how-step-num {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+  color: #fff; font-family: var(--font-h); font-size: 18px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 16px rgba(22,113,100,0.3);
+}
+.how-step-title {
+  font-family: var(--font-h); font-size: 16px; font-weight: 700;
+  color: var(--on-surf); margin-bottom: 8px;
+}
+.how-step-desc { font-size: 13px; color: var(--on-surf-v); line-height: 1.6; }
+
+/* ━━━ SECOND TESTIMONIAL ━━━ */
+.testimonials {
+  background: var(--surf-low);
+  padding: 80px 60px;
+}
+.testimonials-inner { max-width: 1100px; margin: 0 auto; }
+.testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+.testimonial-card {
+  background: var(--white); border-radius: 20px; padding: 28px 24px;
+  box-shadow: var(--sh-card); position: relative;
+}
+.testimonial-card::before {
+  content: '\201C';
+  position: absolute; top: 16px; right: 22px;
+  font-family: var(--font-h); font-size: 60px; font-weight: 800;
+  color: var(--primary-fix); line-height: 1;
+}
+.testimonial-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+.star { color: #F4C23D; font-size: 14px; }
+.testimonial-text {
+  font-size: 14px; color: var(--on-surf); line-height: 1.7;
+  margin-bottom: 18px; font-style: italic;
+}
+.testimonial-divider { height: 1px; background: rgba(187,185,178,.22); margin-bottom: 16px; }
+.testimonial-author { display: flex; align-items: center; gap: 10px; }
+.ta-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; background: var(--surf-mid); }
+.ta-name { font-family: var(--font-h); font-size: 13px; font-weight: 700; color: var(--on-surf); }
+.ta-meta { font-size: 11px; color: var(--on-surf-v); }
+
+/* ━━━ CTA SECTION ━━━ */
+.cta-section {
+  padding: 100px 60px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 0%, rgba(22,113,100,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 20% 100%, rgba(253,186,157,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 2; }
+.cta-h2 {
+  font-family: var(--font-h); font-size: clamp(36px, 4vw, 56px);
+  font-weight: 800; letter-spacing: -0.03em;
+  color: var(--on-surf); margin-bottom: 18px; line-height: 1.08;
+}
+.cta-h2 em { color: var(--primary); font-style: italic; }
+.cta-sub { font-size: 18px; color: var(--on-surf-v); line-height: 1.65; margin-bottom: 40px; }
+.cta-form {
+  display: flex; gap: 12px; max-width: 480px; margin: 0 auto 24px;
+}
+.cta-email {
+  flex: 1; height: 54px;
+  background: var(--white); border: 1.5px solid var(--outline-v);
+  border-radius: 99px; padding: 0 22px;
+  font-family: var(--font-b); font-size: 15px; color: var(--on-surf);
+  outline: none; transition: border-color 0.2s;
+}
+.cta-email:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,113,100,0.12); }
+.cta-email::placeholder { color: var(--on-surf-v); opacity: 0.5; }
+.btn-cta-submit {
+  height: 54px; padding: 0 28px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+  color: #fff; border-radius: 99px; font-size: 15px;
+  box-shadow: var(--sh-cta); flex-shrink: 0;
+}
+.btn-cta-submit:hover { box-shadow: 0 10px 32px rgba(22,113,100,0.45); transform: translateY(-1px); }
+.cta-privacy { font-size: 12px; color: var(--on-surf-v); }
+.cta-privacy a { color: var(--primary); text-decoration: none; }
+
+/* ━━━ FOOTER ━━━ */
+.footer {
+  background: var(--primary-deep);
+  padding: 60px 60px 40px;
+}
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-top {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 48px;
+}
+.footer-brand-text { font-family: var(--font-h); font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.025em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.footer-brand-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.65; max-width: 280px; }
+.footer-col-title { font-family: var(--font-h); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.footer-link { display: block; font-size: 14px; color: rgba(255,255,255,0.65); text-decoration: none; margin-bottom: 10px; transition: color 0.15s; cursor: pointer; background: none; border: none; text-align: left; font-family: var(--font-b); }
+.footer-link:hover { color: var(--primary-fix); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-size: 13px; color: rgba(255,255,255,0.35); }
+.footer-legal { display: flex; gap: 20px; }
+.footer-legal a { font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.15s; }
+.footer-legal a:hover { color: rgba(255,255,255,0.7); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ███████╗ LOGIN MODAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(56,56,51,0.55); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: 28px;
+  padding: 40px; width: 420px; max-width: 95vw;
+  box-shadow: 0 24px 80px rgba(56,56,51,0.22);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(0.94) translateY(8px)} to{opacity:1;transform:none} }
+.modal-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.modal-logo-icon { width: 38px; height: 38px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.modal-logo-icon .icon { color: #fff; font-size: 20px; }
+.modal-logo-text { font-family: var(--font-h); font-size: 18px; font-weight: 800; color: var(--on-surf); letter-spacing: -0.025em; }
+.modal-title { font-family: var(--font-h); font-size: 24px; font-weight: 800; color: var(--on-surf); margin-bottom: 6px; letter-spacing: -0.02em; }
+.modal-sub { font-size: 14px; color: var(--on-surf-v); margin-bottom: 28px; line-height: 1.5; }
+.modal-tabs { display: flex; background: var(--surf-mid); border-radius: 99px; padding: 3px; margin-bottom: 24px; }
+.modal-tab { flex: 1; height: 38px; border-radius: 99px; border: none; background: transparent; font-family: var(--font-b); font-size: 13px; font-weight: 600; color: var(--on-surf-v); cursor: pointer; transition: all 0.18s; }
+.modal-tab.active { background: var(--white); color: var(--on-surf); font-weight: 700; box-shadow: 0 1px 6px rgba(56,56,51,0.1); }
+.modal-field { margin-bottom: 14px; }
+.modal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--on-surf-v); display: block; margin-bottom: 6px; }
+.modal-input {
+  width: 100%; height: 48px;
+  background: var(--surf-mid); border: 1.5px solid transparent;
+  border-radius: 12px; padding: 0 16px;
+  font-family: var(--font-b); font-size: 14px; color: var(--on-surf);
+  outline: none; transition: all 0.2s;
+}
+.modal-input:focus { background: var(--white); border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,113,100,0.12); }
+.modal-input::placeholder { color: var(--on-surf-v); opacity: 0.5; }
+.modal-forgot { font-size: 12px; color: var(--primary); font-weight: 600; text-align: right; display: block; margin-bottom: 22px; cursor: pointer; text-decoration: none; background: none; border: none; width: 100%; font-family: var(--font-b); }
+.btn-modal-submit {
+  width: 100%; height: 50px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dim));
+  color: #fff; border-radius: 99px; font-size: 15px;
+  box-shadow: var(--sh-cta); margin-bottom: 16px;
+}
+.btn-modal-submit:hover { box-shadow: 0 8px 28px rgba(22,113,100,0.45); transform: translateY(-1px); }
+.modal-or { text-align: center; font-size: 12px; color: var(--outline-v); margin-bottom: 16px; position: relative; }
+.modal-or::before, .modal-or::after { content:''; position:absolute; top:50%; width:42%; height:1px; background:rgba(187,185,178,0.35); }
+.modal-or::before { left:0; } .modal-or::after { right:0; }
+.btn-modal-social {
+  width: 100%; height: 46px;
+  background: var(--surf-mid); color: var(--on-surf);
+  border-radius: 12px; font-size: 14px; margin-bottom: 10px;
+}
+.btn-modal-social:hover { background: var(--surf-high); }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surf-top); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--surf-high); }
+.modal-wrap { position: relative; }
+.modal-note { font-size: 12px; color: var(--on-surf-v); text-align: center; line-height: 1.5; }
+.modal-note a { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; }
+
+/* App styles removed for public repo */
+
+/* ━━━ ANIMATIONS ━━━ */
+@keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+.fade-in { animation: fadeInUp 0.6s ease both; }
+.fade-in-d1 { animation-delay:0.1s; }
+.fade-in-d2 { animation-delay:0.2s; }
+.fade-in-d3 { animation-delay:0.3s; }
+.fade-in-d4 { animation-delay:0.4s; }
+
+/* ━━━ RESPONSIVE ━━━ */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding: 100px 32px 60px; }
+  .hero-visual { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-card-large { grid-column: auto; grid-template-columns: 1fr; }
+  .story-inner { grid-template-columns: 1fr; }
+  .story-card { display: none; }
+  .how-steps { grid-template-columns: repeat(2,1fr); gap: 32px; }
+  .how-steps::before { display: none; }
+  .testimonial-grid { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: repeat(2,1fr); }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .lp-nav { padding: 0 24px; }
+  .features, .how-section, .cta-section { padding: 60px 32px; }
+  .story-section { padding: 60px 32px; }
+  .testimonials { padding: 60px 32px; }
+  .footer { padding: 48px 32px 32px; }
+}
+@media (max-width: 640px) {
+  .lp-nav-links .lp-nav-link { display: none; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .hero-ctas { flex-direction: column; }
+  .btn-hero-primary, .btn-hero-ghost { width: 100%; justify-content: center; }
+  .cta-form { flex-direction: column; }
+  .cta-email, .btn-cta-submit { width: 100%; justify-content: center; }
+}
+
+/* ── /try-live-demo full page ── */
+#demo-page {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: var(--bg);
+  overflow-y: auto;
+}
+#demo-page.open { display: block; }
+@keyframes demoPageIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+#demo-page.open > * { animation: demoPageIn 0.3s ease both; }
+
+.demo-page-nav {
+  background: rgba(255,252,247,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(187,185,178,0.18);
+  height: 64px; padding: 0 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.demo-page-logo { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+.demo-page-logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.demo-page-logo-icon .icon { color: #fff; font-size: 18px; }
+.demo-page-logo-name { font-family: var(--font-h); font-size: 16px; font-weight: 800; color: var(--on-surf); letter-spacing: -0.025em; }
+.demo-page-back { display: flex; align-items: center; gap: 6px; font-family: var(--font-b); font-size: 13px; font-weight: 600; color: var(--on-surf-v); background: none; border: none; cursor: pointer; transition: color 0.15s; }
+.demo-page-back:hover { color: var(--primary); }
+.demo-page-back .icon { font-size: 18px; }
+.demo-login-link { font-family: var(--font-b); font-size: 13px; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; }
+
+.demo-page-hero { max-width: 820px; margin: 0 auto; padding: 52px 32px 0; text-align: center; }
+.demo-page-badge { display: inline-flex; align-items: center; gap: 7px; background: var(--primary-fix); color: var(--primary-on); border-radius: 99px; padding: 6px 16px; font-family: var(--font-b); font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 20px; }
+.demo-page-badge .icon-xs { font-size: 13px; }
+.demo-page-h1 { font-family: var(--font-h); font-size: clamp(28px,4vw,44px); font-weight: 800; letter-spacing: -0.03em; color: var(--on-surf); margin-bottom: 14px; line-height: 1.07; }
+.demo-page-h1 em { color: var(--primary); font-style: italic; }
+.demo-page-sub { font-size: 16px; color: var(--on-surf-v); line-height: 1.65; max-width: 540px; margin: 0 auto 40px; }
+
+.demo-video-wrap { max-width: 820px; margin: 0 auto 40px; padding: 0 32px; }
+.demo-video-box { background: var(--on-surf); border-radius: 20px; overflow: hidden; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 24px 60px rgba(56,56,51,0.22); }
+.demo-video-blur { position: absolute; inset: 0; background: linear-gradient(135deg, #1C2B28 0%, #0d3d33 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.demo-video-lock-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; }
+.demo-video-lock-icon .icon { color: var(--primary-fix); font-size: 26px; }
+.demo-video-lock-title { font-family: var(--font-h); font-size: 18px; font-weight: 700; color: #fff; }
+.demo-video-lock-sub { font-size: 13px; color: rgba(255,255,255,0.6); max-width: 340px; text-align: center; line-height: 1.55; }
+
+.demo-form-wrap { max-width: 600px; margin: 0 auto; padding: 0 32px 80px; }
+.demo-form-card { background: var(--white); border-radius: 24px; box-shadow: 0 8px 40px rgba(56,56,51,0.1); overflow: hidden; }
+.demo-form-header { background: linear-gradient(135deg, var(--primary), var(--primary-dim)); padding: 24px 28px; position: relative; overflow: hidden; }
+.demo-form-header-deco { position: absolute; right:-20px; top:-20px; width:80px; height:80px; background:rgba(255,255,255,0.07); border-radius:50%; pointer-events:none; }
+.demo-form-header-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary-fix); display: block; margin-bottom: 5px; }
+.demo-form-header-title { font-family: var(--font-h); font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 3px; }
+.demo-form-header-sub { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+.demo-form-body { padding: 28px; }
+
+.demo-prefilter { margin-bottom: 24px; }
+.demo-prefilter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--on-surf-v); display: block; margin-bottom: 8px; }
+.demo-type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.demo-type-btn { border: 2px solid var(--surf-top); border-radius: 14px; padding: 16px 14px; background: var(--surf-mid); cursor: pointer; text-align: left; transition: all 0.18s; display: flex; flex-direction: column; gap: 4px; }
+.demo-type-btn:hover { border-color: var(--outline-v); background: var(--surf-high); }
+.demo-type-btn.selected { border-color: var(--primary); background: rgba(161,242,226,0.2); }
+.demo-type-icon { font-size: 22px; margin-bottom: 4px; display: block; }
+.demo-type-title { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--on-surf); }
+.demo-type-sub { font-size: 11px; color: var(--on-surf-v); line-height: 1.4; }
+.demo-form-divider { height: 1px; background: rgba(187,185,178,0.22); margin: 20px 0; }
+
+.demo-conditional { display: none; }
+.demo-conditional.visible { display: block; }
+
+.df-field { margin-bottom: 14px; }
+.df-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--on-surf-v); display: block; margin-bottom: 6px; }
+.df-optional { font-size: 9px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--outline-v); }
+.df-input { width: 100%; height: 46px; background: var(--surf-mid); border: 1.5px solid transparent; border-radius: 12px; padding: 0 14px; font-family: var(--font-b); font-size: 13.5px; color: var(--on-surf); outline: none; transition: all 0.2s; }
+.df-input:focus { background: var(--white); border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,113,100,0.1); }
+.df-input::placeholder { color: var(--on-surf-v); opacity: 0.5; }
+.df-select { width: 100%; height: 46px; background: var(--surf-mid); border: 1.5px solid transparent; border-radius: 12px; padding: 0 36px 0 14px; font-family: var(--font-b); font-size: 13.5px; color: var(--on-surf); outline: none; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2365655E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; transition: all 0.2s; }
+.df-select:focus { background-color: var(--white); border-color: var(--primary); box-shadow: 0 0 0 3px rgba(22,113,100,0.1); }
+.df-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn-demo-submit-enterprise, .btn-demo-submit-beta { width: 100%; height: 52px; background: linear-gradient(135deg, var(--primary), var(--primary-dim)); color: #fff; border: none; border-radius: 99px; font-family: var(--font-h); font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 8px 24px rgba(22,113,100,0.3); display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.18s; margin-top: 8px; }
+.btn-demo-submit-enterprise:hover, .btn-demo-submit-beta:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(22,113,100,0.42); }
+.demo-form-privacy { font-size: 11px; color: var(--on-surf-v); text-align: center; margin-top: 12px; line-height: 1.5; }
+.demo-form-privacy a { color: var(--primary); text-decoration: none; }
+
+#beta-confirm-view, #enterprise-confirm-view { display: none; max-width: 600px; margin: 0 auto; padding: 0 32px 80px; text-align: center; }
+#beta-confirm-view.open, #enterprise-confirm-view.open { display: block; }
+.bcv-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.bcv-icon .icon { color: var(--primary); font-size: 34px; }
+.bcv-title { font-family: var(--font-h); font-size: 26px; font-weight: 800; color: var(--on-surf); letter-spacing: -0.025em; margin-bottom: 10px; }
+.bcv-sub { font-size: 15px; color: var(--on-surf-v); line-height: 1.65; max-width: 440px; margin: 0 auto 28px; }
+.bcv-email-box { display: inline-flex; align-items: center; gap: 10px; background: var(--primary-fix); border-radius: 12px; padding: 12px 20px; margin-bottom: 32px; }
+.bcv-email-box .icon { color: var(--primary); font-size: 20px; }
+.bcv-email-text { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--primary-on); }
+.bcv-steps { background: var(--surf-mid); border-radius: 16px; padding: 22px 24px; text-align: left; margin-bottom: 24px; }
+.bcv-step { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(187,185,178,0.2); font-size: 13px; color: var(--on-surf); }
+.bcv-step:last-child { border-bottom: none; }
+.bcv-step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; font-family: var(--font-h); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.btn-bcv-back { height: 46px; padding: 0 28px; background: var(--primary-fix); color: var(--primary-on); border: none; border-radius: 99px; font-family: var(--font-h); font-weight: 700; font-size: 14px; cursor: pointer; }
+
+#live-demo-view { display: none; max-width: 720px; margin: 0 auto; padding: 32px 32px 80px; }
+#live-demo-view.open { display: block; }
+.live-demo-card { background: var(--white); border-radius: 24px; box-shadow: 0 8px 40px rgba(56,56,51,0.1); overflow: hidden; }
+.ldc-header { background: linear-gradient(135deg, var(--primary), var(--primary-dim)); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; }
+.ldc-header-deco { position: absolute; right:-16px; top:-16px; width:70px; height:70px; background:rgba(255,255,255,0.07); border-radius:50%; pointer-events:none; }
+.ldc-header-left { display: flex; align-items: center; gap: 10px; }
+.ldc-header-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; }
+.ldc-header-icon .icon { color: var(--primary-dim); font-size: 17px; }
+.ldc-header-title { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: #fff; }
+.ldc-header-sub { font-size: 11px; color: rgba(255,255,255,0.65); }
+.ldc-beta-tag { background: var(--primary-fix); color: var(--primary-on); border-radius: 99px; padding: 4px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+.ldc-body { padding: 28px; }
+.ldc-progress { display: flex; align-items: center; gap: 8px; margin-bottom: 26px; }
+.ldc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--surf-top); transition: all 0.3s; }
+.ldc-dot.done { background: var(--primary); }
+.ldc-dot.cur { width: 24px; border-radius: 99px; background: var(--primary); }
+.ldc-step-label { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--on-surf-v); }
+.ldc-step { display: none; }
+.ldc-step.active { display: block; }
+.ldc-q { font-family: var(--font-h); font-size: 20px; font-weight: 800; color: var(--on-surf); margin-bottom: 6px; letter-spacing: -0.02em; }
+.ldc-sub { font-size: 13px; color: var(--on-surf-v); line-height: 1.6; margin-bottom: 22px; }
+.ldc-pet-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
+.ldc-pet-opt { border: 2px solid var(--surf-top); border-radius: 14px; padding: 16px 10px; text-align: center; cursor: pointer; background: var(--surf-mid); transition: all 0.18s; }
+.ldc-pet-opt:hover { border-color: var(--outline-v); background: var(--surf-high); transform: translateY(-2px); }
+.ldc-pet-opt.sel { border-color: var(--primary); background: rgba(161,242,226,0.2); transform: translateY(-2px); }
+.ldc-pet-emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+.ldc-pet-label { font-family: var(--font-b); font-size: 11px; font-weight: 700; color: var(--on-surf); }
+.ldc-sym-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.ldc-sym-item { border: 2px solid transparent; border-radius: 12px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; background: var(--surf-mid); transition: all 0.18s; }
+.ldc-sym-item:hover { background: var(--surf-high); }
+.ldc-sym-item.sel { border-color: var(--primary); background: rgba(161,242,226,0.18); }
+.ldc-sym-emoji { font-size: 18px; flex-shrink: 0; }
+.ldc-sym-text { font-size: 13px; font-weight: 600; flex: 1; color: var(--on-surf); }
+.ldc-urgency { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 9px; border-radius: 99px; flex-shrink: 0; }
+.lu-hi { background: rgba(250,116,111,0.14); color: #C0392B; }
+.lu-mi { background: rgba(253,186,157,0.5); color: var(--on-tert-cont); }
+.lu-lo { background: var(--primary-fix); color: var(--primary-on); }
+.ldc-bill-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.ldc-bill-btn { border: 2px solid var(--surf-top); border-radius: 14px; padding: 20px 16px; cursor: pointer; text-align: center; background: var(--surf-mid); transition: all 0.18s; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.ldc-bill-btn:hover { border-color: var(--outline-v); background: var(--surf-high); transform: translateY(-2px); }
+.ldc-bill-btn.yes-sel { border-color: var(--primary); background: rgba(161,242,226,0.2); }
+.ldc-bill-btn.no-sel { border-color: var(--secondary); background: rgba(196,232,247,0.35); }
+.ldc-bill-icon { font-size: 28px; }
+.ldc-bill-label { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--on-surf); }
+.ldc-bill-desc { font-size: 11px; color: var(--on-surf-v); line-height: 1.4; }
+.ldc-upload-zone { border: 2px dashed var(--outline-v); border-radius: 14px; padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surf-low); margin: 16px 0; }
+.ldc-upload-zone:hover { border-color: var(--primary); background: rgba(161,242,226,0.08); }
+.ldc-upload-zone .icon { font-size: 30px; color: var(--primary); opacity: 0.4; display: block; margin: 0 auto 10px; }
+.ldc-upload-title { font-family: var(--font-h); font-size: 14px; font-weight: 700; color: var(--on-surf); margin-bottom: 4px; }
+.ldc-upload-sub { font-size: 12px; color: var(--on-surf-v); }
+.ldc-uploaded { display: flex; align-items: center; gap: 10px; background: rgba(22,113,100,0.07); border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+.ldc-uploaded-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; }
+.ldc-uploaded-icon .icon { font-size: 15px; color: var(--primary); }
+.ldc-uploaded-name { font-size: 12px; font-weight: 600; color: var(--on-surf); }
+.ldc-uploaded-size { font-size: 10px; color: var(--on-surf-v); }
+.ldc-budget-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.ldc-budget-opt { border: 2px solid transparent; border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--surf-mid); transition: all 0.18s; min-height: 60px; }
+.ldc-budget-opt:hover { background: var(--surf-high); }
+.ldc-budget-opt.sel { border-color: var(--primary); background: rgba(161,242,226,0.2); }
+.ldc-budget-main { font-family: var(--font-b); font-size: 14px; font-weight: 700; color: var(--on-surf); }
+.ldc-budget-sub { font-size: 11px; color: var(--on-surf-v); margin-top: 2px; }
+.ldc-budget-check { color: var(--primary); font-size: 20px; opacity: 0; transition: opacity 0.2s; font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+.ldc-budget-opt.sel .ldc-budget-check { opacity: 1; }
+.ldc-result-hero { background: linear-gradient(135deg, rgba(161,242,226,0.45), rgba(196,232,247,0.38)); border-radius: 18px; padding: 22px; margin-bottom: 18px; }
+.ldc-result-tag { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary-dim); margin-bottom: 6px; }
+.ldc-result-title { font-family: var(--font-h); font-size: 18px; font-weight: 800; color: var(--on-surf); margin-bottom: 7px; }
+.ldc-result-body { font-size: 13px; color: var(--on-surf-v); line-height: 1.6; }
+.ldc-grant-card { background: var(--white); border-radius: 14px; padding: 16px 18px; box-shadow: 0 2px 14px rgba(56,56,51,0.07); margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+.ldc-grant-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ldc-grant-icon .icon { color: var(--primary); font-size: 20px; }
+.ldc-grant-name { font-family: var(--font-h); font-size: 13px; font-weight: 700; color: var(--on-surf); margin-bottom: 2px; }
+.ldc-grant-meta { font-size: 11px; color: var(--on-surf-v); }
+.ldc-grant-amt { margin-left: auto; font-family: var(--font-h); font-size: 16px; font-weight: 800; color: var(--primary); flex-shrink: 0; }
+.ldc-clinic-card { background: var(--white); border-radius: 14px; padding: 16px 18px; box-shadow: 0 2px 14px rgba(56,56,51,0.07); margin-bottom: 10px; }
+.ldc-clinic-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+.ldc-clinic-name { font-family: var(--font-h); font-size: 13px; font-weight: 700; color: var(--on-surf); }
+.ldc-clinic-dist { font-size: 11px; color: var(--on-surf-v); }
+.ldc-clinic-care-tag { background: var(--sec-cont); color: #204450; border-radius: 99px; padding: 3px 9px; font-size: 10px; font-weight: 700; }
+.ldc-clinic-meta { font-size: 11px; color: var(--on-surf-v); margin-bottom: 10px; }
+.ldc-clinic-footer { display: flex; gap: 8px; }
+.btn-ldc-call { height: 32px; padding: 0 14px; background: var(--emergency); color: #fff; border: none; border-radius: 99px; font-family: var(--font-h); font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.btn-ldc-more { height: 32px; padding: 0 14px; background: var(--surf-top); color: var(--on-surf-v); border: none; border-radius: 99px; font-family: var(--font-b); font-size: 11px; font-weight: 600; cursor: pointer; }
+.ldc-nav { display: flex; gap: 10px; margin-top: 6px; }
+.btn-ldc-next { flex: 1; height: 48px; background: linear-gradient(135deg, var(--primary), var(--primary-dim)); color: #fff; border-radius: 99px; font-family: var(--font-h); font-weight: 700; font-size: 14px; border: none; cursor: pointer; box-shadow: 0 6px 20px rgba(22,113,100,0.25); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.btn-ldc-next:hover { transform: translateY(-1px); }
+.btn-ldc-back { height: 48px; padding: 0 18px; background: var(--surf-top); color: var(--on-surf-v); border: none; border-radius: 99px; font-family: var(--font-b); font-size: 13px; font-weight: 600; cursor: pointer; }
+.ldc-signup-nudge { background: linear-gradient(135deg, var(--primary), var(--primary-dim)); border-radius: 18px; padding: 22px; text-align: center; margin-top: 8px; position: relative; overflow: hidden; }
+.ldc-signup-nudge-deco { position: absolute; right:-16px; top:-16px; width:70px; height:70px; background:rgba(255,255,255,0.07); border-radius:50%; pointer-events:none; }
+.ldc-signup-nudge h3 { font-family: var(--font-h); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.ldc-signup-nudge p { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.55; margin-bottom: 16px; }
+.ldc-nudge-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.btn-ldc-signup { height: 42px; padding: 0 22px; background: var(--primary-fix); color: var(--primary-on); border: none; border-radius: 99px; font-family: var(--font-h); font-weight: 700; font-size: 13px; cursor: pointer; }
+.btn-ldc-restart { height: 42px; padding: 0 18px; background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.3); color: #fff; border-radius: 99px; font-family: var(--font-b); font-size: 12px; font-weight: 600; cursor: pointer; }
+.ldc-disclaimer { background: rgba(253,186,157,0.28); border-radius: 12px; padding: 12px 14px; display: flex; gap: 8px; font-size: 11px; color: var(--on-tert-fv); line-height: 1.55; margin-bottom: 16px; }
+.ldc-disclaimer .icon { color: var(--tertiary); font-size: 16px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     LANDING PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div id="landing">
+
+  <!-- NAV -->
+  <nav class="lp-nav">
+    <a class="lp-nav-logo">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjI5MCA2ODAgOTYwIDE0NSIgdmVyc2lvbj0iMS4wIj4KPGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDQuNTI5MzAzLCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA5Ljc4MTI1IDAgTCA5Ljc4MTI1IC0xMTIuMjAzMTI1IEwgNTguMDE1NjI1IC0xMTIuMjAzMTI1IEMgNjUuNDkyMTg4IC0xMTIuMjAzMTI1IDcyLjM1OTM3NSAtMTEwLjQ4ODI4MSA3OC42MDkzNzUgLTEwNy4wNjI1IEMgODQuODY3MTg4IC0xMDMuNjQ0NTMxIDg5Ljg2NzE4OCAtOTguOTE0MDYyIDkzLjYwOTM3NSAtOTIuODc1IEMgOTcuMzQ3NjU2IC04Ni44NDM3NSA5OS4yMTg3NSAtNzkuODc1IDk5LjIxODc1IC03MS45Njg3NSBDIDk5LjIxODc1IC02NC4wNjI1IDk3LjM0NzY1NiAtNTcuMDM1MTU2IDkzLjYwOTM3NSAtNTAuODkwNjI1IEMgODkuODY3MTg4IC00NC43NDIxODggODQuODk4NDM4IC0zOS45NjA5MzggNzguNzAzMTI1IC0zNi41NDY4NzUgQyA3Mi41MDM5MDYgLTMzLjEyODkwNiA2NS42MDkzNzUgLTMxLjQyMTg3NSA1OC4wMTU2MjUgLTMxLjQyMTg3NSBMIDM2LjcwMzEyNSAtMzEuNDIxODc1IEwgMzYuNzAzMTI1IDAgWiBNIDM2LjcwMzEyNSAtNTQuMDE1NjI1IEwgNTQuOTY4NzUgLTU0LjAxNTYyNSBDIDU4LjE3NTc4MSAtNTQuMDE1NjI1IDYxLjA2MjUgLTU0LjcwNzAzMSA2My42MjUgLTU2LjA5Mzc1IEMgNjYuMTk1MzEyIC01Ny40ODgyODEgNjguMjgxMjUgLTU5LjUxOTUzMSA2OS44NzUgLTYyLjE4NzUgQyA3MS40NzY1NjIgLTY0Ljg2MzI4MSA3Mi4yODEyNSAtNjguMDcwMzEyIDcyLjI4MTI1IC03MS44MTI1IEMgNzIuMjgxMjUgLTc1LjU1MDc4MSA3MS40NzY1NjIgLTc4Ljc1MzkwNiA2OS44NzUgLTgxLjQyMTg3NSBDIDY4LjI4MTI1IC04NC4wOTc2NTYgNjYuMTcxODc1IC04Ni4xNTYyNSA2My41NDY4NzUgLTg3LjU5Mzc1IEMgNjAuOTI5Njg4IC04OS4wMzEyNSA1OC4wNzAzMTIgLTg5Ljc1IDU0Ljk2ODc1IC04OS43NSBMIDM2LjcwMzEyNSAtODkuNzUgWiBNIDM2LjcwMzEyNSAtNTQuMDE1NjI1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDA0LjUzNDgxOCwgODA1LjEyNDkxMSkiPjxnPjxwYXRoIGQ9Ik0gNDIuMzEyNSAxLjkyMTg3NSBDIDM1LjA1MDc4MSAxLjkyMTg3NSAyOC42NDA2MjUgMC4wNTA3ODEyIDIzLjA3ODEyNSAtMy42ODc1IEMgMTcuNTIzNDM4IC03LjQyNTc4MSAxMy4xOTUzMTIgLTEyLjQ3MjY1NiAxMC4wOTM3NSAtMTguODI4MTI1IEMgNyAtMjUuMTkxNDA2IDUuNDUzMTI1IC0zMi4zNzg5MDYgNS40NTMxMjUgLTQwLjM5MDYyNSBDIDUuNDUzMTI1IC00OC43MjI2NTYgNy4yNjU2MjUgLTU2LjE3NTc4MSAxMC44OTA2MjUgLTYyLjc1IEMgMTQuNTIzNDM4IC02OS4zMjAzMTIgMTkuNjc5Njg4IC03NC41MzEyNSAyNi4zNTkzNzUgLTc4LjM3NSBDIDMzLjA0Njg3NSAtODIuMjE4NzUgNDAuOTI1NzgxIC04NC4xNDA2MjUgNTAgLTg0LjE0MDYyNSBDIDU5LjE5NTMxMiAtODQuMTQwNjI1IDY3LjAyMzQzOCAtODIuMjQyMTg4IDczLjQ4NDM3NSAtNzguNDUzMTI1IEMgNzkuOTUzMTI1IC03NC42NjAxNTYgODQuOTIxODc1IC02OS40NzY1NjIgODguMzkwNjI1IC02Mi45MDYyNSBDIDkxLjg2NzE4OCAtNTYuMzMyMDMxIDkzLjYwOTM3NSAtNDguOTg4MjgxIDkzLjYwOTM3NSAtNDAuODc1IEwgOTMuNjA5Mzc1IDAgTCA2OS4yMzQzNzUgMCBMIDY5LjIzNDM3NSAtMTMuMTQwNjI1IEwgNjguNTkzNzUgLTEzLjE0MDYyNSBDIDY3LjEwMTU2MiAtMTAuMjUzOTA2IDY1LjE3OTY4OCAtNy42NjAxNTYgNjIuODI4MTI1IC01LjM1OTM3NSBDIDYwLjQ3MjY1NiAtMy4wNjY0MDYgNTcuNjEzMjgxIC0xLjI4MTI1IDU0LjI1IDAgQyA1MC44ODI4MTIgMS4yODEyNSA0Ni45MDYyNSAxLjkyMTg3NSA0Mi4zMTI1IDEuOTIxODc1IFogTSA0OS42ODc1IC0xOS41NDY4NzUgQyA1My40MjU3ODEgLTE5LjU0Njg3NSA1Ni43MTA5MzggLTIwLjQ4NDM3NSA1OS41NDY4NzUgLTIyLjM1OTM3NSBDIDYyLjM3ODkwNiAtMjQuMjM0Mzc1IDY0LjUzOTA2MiAtMjYuODI4MTI1IDY2LjAzMTI1IC0zMC4xNDA2MjUgQyA2Ny41MzEyNSAtMzMuNDUzMTI1IDY4LjI4MTI1IC0zNy4xMzI4MTIgNjguMjgxMjUgLTQxLjE4NzUgQyA2OC4yODEyNSAtNDUuMTQ0NTMxIDY3LjUzMTI1IC00OC43MjI2NTYgNjYuMDMxMjUgLTUxLjkyMTg3NSBDIDY0LjUzOTA2MiAtNTUuMTI4OTA2IDYyLjM3ODkwNiAtNTcuNjY0MDYyIDU5LjU0Njg3NSAtNTkuNTMxMjUgQyA1Ni43MTA5MzggLTYxLjQwNjI1IDUzLjQyNTc4MSAtNjIuMzQzNzUgNDkuNjg3NSAtNjIuMzQzNzUgQyA0NS44NDM3NSAtNjIuMzQzNzUgNDIuNDc2NTYyIC02MS40MDYyNSAzOS41OTM3NSAtNTkuNTMxMjUgQyAzNi43MDcwMzEgLTU3LjY2NDA2MiAzNC41MTU2MjUgLTU1LjEyODkwNiAzMy4wMTU2MjUgLTUxLjkyMTg3NSBDIDMxLjUyMzQzOCAtNDguNzIyNjU2IDMwLjc4MTI1IC00NS4xNDQ1MzEgMzAuNzgxMjUgLTQxLjE4NzUgQyAzMC43ODEyNSAtMzcuMTMyODEyIDMxLjUyMzQzOCAtMzMuNDUzMTI1IDMzLjAxNTYyNSAtMzAuMTQwNjI1IEMgMzQuNTE1NjI1IC0yNi44MjgxMjUgMzYuNzA3MDMxIC0yNC4yMzQzNzUgMzkuNTkzNzUgLTIyLjM1OTM3NSBDIDQyLjQ3NjU2MiAtMjAuNDg0Mzc1IDQ1Ljg0Mzc1IC0xOS41NDY4NzUgNDkuNjg3NSAtMTkuNTQ2ODc1IFogTSA0OS42ODc1IC0xOS41NDY4NzUgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MDcuMjY1MDM0LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA5LjI5Njg3NSAwIEwgOS4yOTY4NzUgLTExNyBMIDM0LjE0MDYyNSAtMTE3IEwgMzQuMTQwNjI1IDAgWiBNIDkuMjk2ODc1IDAgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1NTAuNTM2NzQ0LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi43MzQzNzUgLTg0LjE0MDYyNSBDIDU5LjY3OTY4OCAtODQuMTQwNjI1IDY1Ljg1MTU2MiAtODMuMDQ2ODc1IDcxLjI1IC04MC44NTkzNzUgQyA3Ni42NDQ1MzEgLTc4LjY3MTg3NSA4MS4yMzgyODEgLTc1LjU3MDMxMiA4NS4wMzEyNSAtNzEuNTYyNSBDIDg4LjgyMDMxMiAtNjcuNTYyNSA5MS43MzQzNzUgLTYyLjg1OTM3NSA5My43NjU2MjUgLTU3LjQ1MzEyNSBDIDk1Ljc5Njg3NSAtNTIuMDU0Njg4IDk2LjgxMjUgLTQ2LjEwMTU2MiA5Ni44MTI1IC0zOS41OTM3NSBDIDk2LjgxMjUgLTMxLjQ2ODc1IDk1LjEyODkwNiAtMjQuMjgxMjUgOTEuNzY1NjI1IC0xOC4wMzEyNSBDIDg4LjM5ODQzOCAtMTEuNzgxMjUgODMuNzczNDM4IC02Ljg5MDYyNSA3Ny44OTA2MjUgLTMuMzU5Mzc1IEMgNzIuMDE1NjI1IDAuMTYwMTU2IDY1LjE3NTc4MSAxLjkyMTg3NSA1Ny4zNzUgMS45MjE4NzUgQyA1NC4wNjI1IDEuOTIxODc1IDUwLjkzNzUgMS40OTIxODggNDggMC42NDA2MjUgQyA0NS4wNjI1IC0wLjIxMDkzOCA0Mi4zOTA2MjUgLTEuNDQxNDA2IDM5Ljk4NDM3NSAtMy4wNDY4NzUgQyAzNy41ODU5MzggLTQuNjQ4NDM4IDM1LjU4NTkzOCAtNi42MjUgMzMuOTg0Mzc1IC04Ljk2ODc1IEwgMzMuNSAtOC45Njg3NSBMIDMzLjUgMzQuNzgxMjUgTCA4LjY1NjI1IDM0Ljc4MTI1IEwgOC42NTYyNSAtMzkuNTkzNzUgQyA4LjY1NjI1IC00OC42NzU3ODEgMTAuNDY4NzUgLTU2LjUzMTI1IDE0LjA5Mzc1IC02My4xNTYyNSBDIDE3LjcyNjU2MiAtNjkuNzgxMjUgMjIuODU5Mzc1IC03NC45Mjk2ODggMjkuNDg0Mzc1IC03OC42MDkzNzUgQyAzNi4xMDkzNzUgLTgyLjI5Njg3NSA0My44NTkzNzUgLTg0LjE0MDYyNSA1Mi43MzQzNzUgLTg0LjE0MDYyNSBaIE0gNTIuNzM0Mzc1IC02Mi42NzE4NzUgQyA0OC44OTA2MjUgLTYyLjY3MTg3NSA0NS41NTA3ODEgLTYxLjczNDM3NSA0Mi43MTg3NSAtNTkuODU5Mzc1IEMgMzkuODgyODEyIC01Ny45OTIxODggMzcuNzE4NzUgLTU1LjQyOTY4OCAzNi4yMTg3NSAtNTIuMTcxODc1IEMgMzQuNzI2NTYyIC00OC45MTAxNTYgMzMuOTg0Mzc1IC00NS4yNSAzMy45ODQzNzUgLTQxLjE4NzUgQyAzMy45ODQzNzUgLTM3LjEzMjgxMiAzNC43MjY1NjIgLTMzLjUwMzkwNiAzNi4yMTg3NSAtMzAuMjk2ODc1IEMgMzcuNzE4NzUgLTI3LjA4NTkzOCAzOS44ODI4MTIgLTI0LjU0Njg3NSA0Mi43MTg3NSAtMjIuNjcxODc1IEMgNDUuNTUwNzgxIC0yMC44MDQ2ODggNDguODkwNjI1IC0xOS44NzUgNTIuNzM0Mzc1IC0xOS44NzUgQyA1Ni41NzgxMjUgLTE5Ljg3NSA1OS44OTA2MjUgLTIwLjgwNDY4OCA2Mi42NzE4NzUgLTIyLjY3MTg3NSBDIDY1LjQ1MzEyNSAtMjQuNTQ2ODc1IDY3LjYxMzI4MSAtMjcuMDg1OTM4IDY5LjE1NjI1IC0zMC4yOTY4NzUgQyA3MC43MDcwMzEgLTMzLjUwMzkwNiA3MS40ODQzNzUgLTM3LjEzMjgxMiA3MS40ODQzNzUgLTQxLjE4NzUgQyA3MS40ODQzNzUgLTQ1LjI1IDcwLjcwNzAzMSAtNDguOTEwMTU2IDY5LjE1NjI1IC01Mi4xNzE4NzUgQyA2Ny42MTMyODEgLTU1LjQyOTY4OCA2NS40NTMxMjUgLTU3Ljk5MjE4OCA2Mi42NzE4NzUgLTU5Ljg1OTM3NSBDIDU5Ljg5MDYyNSAtNjEuNzM0Mzc1IDU2LjU3ODEyNSAtNjIuNjcxODc1IDUyLjczNDM3NSAtNjIuNjcxODc1IFogTSA1Mi43MzQzNzUgLTYyLjY3MTg3NSAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDY1Mi43ODYxNzEsIDgwNS4xMjQ5MTEpIj48Zz48cGF0aCBkPSJNIDQyLjMxMjUgMS45MjE4NzUgQyAzNS4wNTA3ODEgMS45MjE4NzUgMjguNjQwNjI1IDAuMDUwNzgxMiAyMy4wNzgxMjUgLTMuNjg3NSBDIDE3LjUyMzQzOCAtNy40MjU3ODEgMTMuMTk1MzEyIC0xMi40NzI2NTYgMTAuMDkzNzUgLTE4LjgyODEyNSBDIDcgLTI1LjE5MTQwNiA1LjQ1MzEyNSAtMzIuMzc4OTA2IDUuNDUzMTI1IC00MC4zOTA2MjUgQyA1LjQ1MzEyNSAtNDguNzIyNjU2IDcuMjY1NjI1IC01Ni4xNzU3ODEgMTAuODkwNjI1IC02Mi43NSBDIDE0LjUyMzQzOCAtNjkuMzIwMzEyIDE5LjY3OTY4OCAtNzQuNTMxMjUgMjYuMzU5Mzc1IC03OC4zNzUgQyAzMy4wNDY4NzUgLTgyLjIxODc1IDQwLjkyNTc4MSAtODQuMTQwNjI1IDUwIC04NC4xNDA2MjUgQyA1OS4xOTUzMTIgLTg0LjE0MDYyNSA2Ny4wMjM0MzggLTgyLjI0MjE4OCA3My40ODQzNzUgLTc4LjQ1MzEyNSBDIDc5Ljk1MzEyNSAtNzQuNjYwMTU2IDg0LjkyMTg3NSAtNjkuNDc2NTYyIDg4LjM5MDYyNSAtNjIuOTA2MjUgQyA5MS44NjcxODggLTU2LjMzMjAzMSA5My42MDkzNzUgLTQ4Ljk4ODI4MSA5My42MDkzNzUgLTQwLjg3NSBMIDkzLjYwOTM3NSAwIEwgNjkuMjM0Mzc1IDAgTCA2OS4yMzQzNzUgLTEzLjE0MDYyNSBMIDY4LjU5Mzc1IC0xMy4xNDA2MjUgQyA2Ny4xMDE1NjIgLTEwLjI1MzkwNiA2NS4xNzk2ODggLTcuNjYwMTU2IDYyLjgyODEyNSAtNS4zNTkzNzUgQyA2MC40NzI2NTYgLTMuMDY2NDA2IDU3LjYxMzI4MSAtMS4yODEyNSA1NC4yNSAwIEMgNTAuODgyODEyIDEuMjgxMjUgNDYuOTA2MjUgMS45MjE4NzUgNDIuMzEyNSAxLjkyMTg3NSBaIE0gNDkuNjg3NSAtMTkuNTQ2ODc1IEMgNTMuNDI1NzgxIC0xOS41NDY4NzUgNTYuNzEwOTM4IC0yMC40ODQzNzUgNTkuNTQ2ODc1IC0yMi4zNTkzNzUgQyA2Mi4zNzg5MDYgLTI0LjIzNDM3NSA2NC41MzkwNjIgLTI2LjgyODEyNSA2Ni4wMzEyNSAtMzAuMTQwNjI1IEMgNjcuNTMxMjUgLTMzLjQ1MzEyNSA2OC4yODEyNSAtMzcuMTMyODEyIDY4LjI4MTI1IC00MS4xODc1IEMgNjguMjgxMjUgLTQ1LjE0NDUzMSA2Ny41MzEyNSAtNDguNzIyNjU2IDY2LjAzMTI1IC01MS45MjE4NzUgQyA2NC41MzkwNjIgLTU1LjEyODkwNiA2Mi4zNzg5MDYgLTU3LjY2NDA2MiA1OS41NDY4NzUgLTU5LjUzMTI1IEMgNTYuNzEwOTM4IC02MS40MDYyNSA1My40MjU3ODEgLTYyLjM0Mzc1IDQ5LjY4NzUgLTYyLjM0Mzc1IEMgNDUuODQzNzUgLTYyLjM0Mzc1IDQyLjQ3NjU2MiAtNjEuNDA2MjUgMzkuNTkzNzUgLTU5LjUzMTI1IEMgMzYuNzA3MDMxIC01Ny42NjQwNjIgMzQuNTE1NjI1IC01NS4xMjg5MDYgMzMuMDE1NjI1IC01MS45MjE4NzUgQyAzMS41MjM0MzggLTQ4LjcyMjY1NiAzMC43ODEyNSAtNDUuMTQ0NTMxIDMwLjc4MTI1IC00MS4xODc1IEMgMzAuNzgxMjUgLTM3LjEzMjgxMiAzMS41MjM0MzggLTMzLjQ1MzEyNSAzMy4wMTU2MjUgLTMwLjE0MDYyNSBDIDM0LjUxNTYyNSAtMjYuODI4MTI1IDM2LjcwNzAzMSAtMjQuMjM0Mzc1IDM5LjU5Mzc1IC0yMi4zNTkzNzUgQyA0Mi40NzY1NjIgLTIwLjQ4NDM3NSA0NS44NDM3NSAtMTkuNTQ2ODc1IDQ5LjY4NzUgLTE5LjU0Njg3NSBaIE0gNDkuNjg3NSAtMTkuNTQ2ODc1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzU1LjUxNjM4NywgODA1LjEyNDkxMSkiPjxnPjxwYXRoIGQ9Ik0gNDEuMTg3NSAxLjkyMTg3NSBDIDM1LjUzMTI1IDEuOTIxODc1IDMwLjI2OTUzMSAwLjgwMDc4MSAyNS40MDYyNSAtMS40Mzc1IEMgMjAuNTM5MDYyIC0zLjY4NzUgMTYuNjQwNjI1IC03LjEwOTM3NSAxMy43MDMxMjUgLTExLjcwMzEyNSBDIDEwLjc2NTYyNSAtMTYuMjk2ODc1IDkuMjk2ODc1IC0yMi4wNjY0MDYgOS4yOTY4NzUgLTI5LjAxNTYyNSBMIDkuMjk2ODc1IC04Mi4yMTg3NSBMIDM0LjE0MDYyNSAtODIuMjE4NzUgTCAzNC4xNDA2MjUgLTI1LjgxMjUgQyAzNC4xNDA2MjUgLTI0LjUxOTUzMSAzNC40NTcwMzEgLTIzLjMzNTkzOCAzNS4wOTM3NSAtMjIuMjY1NjI1IEMgMzUuNzM4MjgxIC0yMS4yMDMxMjUgMzYuNTkzNzUgLTIwLjM0NzY1NiAzNy42NTYyNSAtMTkuNzAzMTI1IEMgMzguNzI2NTYyIC0xOS4wNjY0MDYgMzkuOTA2MjUgLTE4Ljc1IDQxLjE4NzUgLTE4Ljc1IEMgNDIuNDY4NzUgLTE4Ljc1IDQzLjY0NDUzMSAtMTkuMDY2NDA2IDQ0LjcxODc1IC0xOS43MDMxMjUgQyA0NS43ODkwNjIgLTIwLjM0NzY1NiA0Ni42NDQ1MzEgLTIxLjIwMzEyNSA0Ny4yODEyNSAtMjIuMjY1NjI1IEMgNDcuOTI1NzgxIC0yMy4zMzU5MzggNDguMjUgLTI0LjUxOTUzMSA0OC4yNSAtMjUuODEyNSBMIDQ4LjI1IC01My4yMTg3NSBDIDQ4LjI1IC01OS44NDM3NSA0OS42MzI4MTIgLTY1LjQ1MzEyNSA1Mi40MDYyNSAtNzAuMDQ2ODc1IEMgNTUuMTg3NSAtNzQuNjQwNjI1IDU5LjAwNzgxMiAtNzguMTMyODEyIDYzLjg3NSAtODAuNTMxMjUgQyA2OC43MzgyODEgLTgyLjkzNzUgNzQuMjEwOTM4IC04NC4xNDA2MjUgODAuMjk2ODc1IC04NC4xNDA2MjUgQyA4Ni4zOTA2MjUgLTg0LjE0MDYyNSA5MS44MzU5MzggLTgyLjkzNzUgOTYuNjQwNjI1IC04MC41MzEyNSBDIDEwMS40NTMxMjUgLTc4LjEzMjgxMiAxMDUuMjUgLTc0LjY0MDYyNSAxMDguMDMxMjUgLTcwLjA0Njg3NSBDIDExMC44MTI1IC02NS40NTMxMjUgMTEyLjIwMzEyNSAtNTkuODQzNzUgMTEyLjIwMzEyNSAtNTMuMjE4NzUgTCAxMTIuMjAzMTI1IC0yNS44MTI1IEMgMTEyLjIwMzEyNSAtMjQuNTE5NTMxIDExMi41MTk1MzEgLTIzLjMzNTkzOCAxMTMuMTU2MjUgLTIyLjI2NTYyNSBDIDExMy44MDA3ODEgLTIxLjIwMzEyNSAxMTQuNjc5Njg4IC0yMC4zNDc2NTYgMTE1Ljc5Njg3NSAtMTkuNzAzMTI1IEMgMTE2LjkyMTg3NSAtMTkuMDY2NDA2IDExOC4xMjUgLTE4Ljc1IDExOS40MDYyNSAtMTguNzUgQyAxMjAuNjg3NSAtMTguNzUgMTIxLjg1OTM3NSAtMTkuMDY2NDA2IDEyMi45MjE4NzUgLTE5LjcwMzEyNSBDIDEyMy45OTIxODggLTIwLjM0NzY1NiAxMjQuODUxNTYyIC0yMS4yMDMxMjUgMTI1LjUgLTIyLjI2NTYyNSBDIDEyNi4xNDQ1MzEgLTIzLjMzNTkzOCAxMjYuNDY4NzUgLTI0LjUxOTUzMSAxMjYuNDY4NzUgLTI1LjgxMjUgTCAxMjYuNDY4NzUgLTgyLjIxODc1IEwgMTUxLjMxMjUgLTgyLjIxODc1IEwgMTUxLjMxMjUgLTI5LjAxNTYyNSBDIDE1MS4zMTI1IC0yMi4wNjY0MDYgMTQ5LjgzNTkzOCAtMTYuMjk2ODc1IDE0Ni44OTA2MjUgLTExLjcwMzEyNSBDIDE0My45NTMxMjUgLTcuMTA5Mzc1IDE0MC4wNTA3ODEgLTMuNjg3NSAxMzUuMTg3NSAtMS40Mzc1IEMgMTMwLjMzMjAzMSAwLjgwMDc4MSAxMjUuMDcwMzEyIDEuOTIxODc1IDExOS40MDYyNSAxLjkyMTg3NSBDIDExMy43NSAxLjkyMTg3NSAxMDguNDg4MjgxIDAuODAwNzgxIDEwMy42MjUgLTEuNDM3NSBDIDk4Ljc1NzgxMiAtMy42ODc1IDk0LjgzMjAzMSAtNy4xMDkzNzUgOTEuODQzNzUgLTExLjcwMzEyNSBDIDg4Ljg1MTU2MiAtMTYuMjk2ODc1IDg3LjM1OTM3NSAtMjIuMDY2NDA2IDg3LjM1OTM3NSAtMjkuMDE1NjI1IEwgODcuMzU5Mzc1IC01Ni4yNjU2MjUgQyA4Ny4zNTkzNzUgLTU3LjY0ODQzOCA4Ny4wMzUxNTYgLTU4Ljg3NSA4Ni4zOTA2MjUgLTU5LjkzNzUgQyA4NS43NTM5MDYgLTYxLjAwNzgxMiA4NC44OTg0MzggLTYxLjg2MzI4MSA4My44MjgxMjUgLTYyLjUgQyA4Mi43NTM5MDYgLTYzLjE0NDUzMSA4MS41NzgxMjUgLTYzLjQ2ODc1IDgwLjI5Njg3NSAtNjMuNDY4NzUgQyA3OS4wMTU2MjUgLTYzLjQ2ODc1IDc3LjgxMjUgLTYzLjE0NDUzMSA3Ni42ODc1IC02Mi41IEMgNzUuNTcwMzEyIC02MS44NjMyODEgNzQuNjkxNDA2IC02MS4wMDc4MTIgNzQuMDQ2ODc1IC01OS45Mzc1IEMgNzMuNDEwMTU2IC01OC44NzUgNzMuMDkzNzUgLTU3LjY0ODQzOCA3My4wOTM3NSAtNTYuMjY1NjI1IEwgNzMuMDkzNzUgLTI5LjAxNTYyNSBDIDczLjA5Mzc1IC0yMi4wNjY0MDYgNzEuNjE3MTg4IC0xNi4yOTY4NzUgNjguNjcxODc1IC0xMS43MDMxMjUgQyA2NS43MzQzNzUgLTcuMTA5Mzc1IDYxLjgzMjAzMSAtMy42ODc1IDU2Ljk2ODc1IC0xLjQzNzUgQyA1Mi4xMTMyODEgMC44MDA3ODEgNDYuODUxNTYyIDEuOTIxODc1IDQxLjE4NzUgMS45MjE4NzUgWiBNIDQxLjE4NzUgMS45MjE4NzUgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5MTYuMTAyNDM1LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi43MzQzNzUgMS45MjE4NzUgQyA0My44NTkzNzUgMS45MjE4NzUgMzYuMTA5Mzc1IDAuMTA5Mzc1IDI5LjQ4NDM3NSAtMy41MTU2MjUgQyAyMi44NTkzNzUgLTcuMTQ4NDM4IDE3LjcyNjU2MiAtMTIuMzMyMDMxIDE0LjA5Mzc1IC0xOS4wNjI1IEMgMTAuNDY4NzUgLTI1LjgwMDc4MSA4LjY1NjI1IC0zMy42NjAxNTYgOC42NTYyNSAtNDIuNjQwNjI1IEwgOC42NTYyNSAtMTE3IEwgMzMuNSAtMTE3IEwgMzMuNSAtNzMuMjUgTCAzMy45ODQzNzUgLTczLjI1IEMgMzUuNTg1OTM4IC03NS40ODgyODEgMzcuNTg1OTM4IC03Ny40Mzc1IDM5Ljk4NDM3NSAtNzkuMDkzNzUgQyA0Mi4zOTA2MjUgLTgwLjc1IDQ1LjA2MjUgLTgyLjAwMzkwNiA0OCAtODIuODU5Mzc1IEMgNTAuOTM3NSAtODMuNzEwOTM4IDU0LjA2MjUgLTg0LjE0MDYyNSA1Ny4zNzUgLTg0LjE0MDYyNSBDIDY1LjE3NTc4MSAtODQuMTQwNjI1IDcyLjAxNTYyNSAtODIuMzc1IDc3Ljg5MDYyNSAtNzguODQzNzUgQyA4My43NzM0MzggLTc1LjMyMDMxMiA4OC4zOTg0MzggLTcwLjQ2MDkzOCA5MS43NjU2MjUgLTY0LjI2NTYyNSBDIDk1LjEyODkwNiAtNTguMDY2NDA2IDk2LjgxMjUgLTUwLjgwMDc4MSA5Ni44MTI1IC00Mi40Njg3NSBDIDk2LjgxMjUgLTM2LjA2MjUgOTUuNzk2ODc1IC0zMC4xMzI4MTIgOTMuNzY1NjI1IC0yNC42ODc1IEMgOTEuNzM0Mzc1IC0xOS4yMzgyODEgODguODIwMzEyIC0xNC41MDc4MTIgODUuMDMxMjUgLTEwLjUgQyA4MS4yMzgyODEgLTYuNDg4MjgxIDc2LjY0NDUzMSAtMy40MTQwNjIgNzEuMjUgLTEuMjgxMjUgQyA2NS44NTE1NjIgMC44NTE1NjIgNTkuNjc5Njg4IDEuOTIxODc1IDUyLjczNDM3NSAxLjkyMTg3NSBaIE0gNTIuNzM0Mzc1IC0xOS41NDY4NzUgQyA1Ni41NzgxMjUgLTE5LjU0Njg3NSA1OS44OTA2MjUgLTIwLjQ4NDM3NSA2Mi42NzE4NzUgLTIyLjM1OTM3NSBDIDY1LjQ1MzEyNSAtMjQuMjM0Mzc1IDY3LjYxMzI4MSAtMjYuNzk2ODc1IDY5LjE1NjI1IC0zMC4wNDY4NzUgQyA3MC43MDcwMzEgLTMzLjMwNDY4OCA3MS40ODQzNzUgLTM2Ljk2ODc1IDcxLjQ4NDM3NSAtNDEuMDMxMjUgQyA3MS40ODQzNzUgLTQ1LjA5Mzc1IDcwLjcwNzAzMSAtNDguNzIyNjU2IDY5LjE1NjI1IC01MS45MjE4NzUgQyA2Ny42MTMyODEgLTU1LjEyODkwNiA2NS40NTMxMjUgLTU3LjY2NDA2MiA2Mi42NzE4NzUgLTU5LjUzMTI1IEMgNTkuODkwNjI1IC02MS40MDYyNSA1Ni41NzgxMjUgLTYyLjM0Mzc1IDUyLjczNDM3NSAtNjIuMzQzNzUgQyA0OC44OTA2MjUgLTYyLjM0Mzc1IDQ1LjU1MDc4MSAtNjEuNDA2MjUgNDIuNzE4NzUgLTU5LjUzMTI1IEMgMzkuODgyODEyIC01Ny42NjQwNjIgMzcuNzE4NzUgLTU1LjEyODkwNiAzNi4yMTg3NSAtNTEuOTIxODc1IEMgMzQuNzI2NTYyIC00OC43MjI2NTYgMzMuOTg0Mzc1IC00NS4wOTM3NSAzMy45ODQzNzUgLTQxLjAzMTI1IEMgMzMuOTg0Mzc1IC0zNi45Njg3NSAzNC43MjY1NjIgLTMzLjMwNDY4OCAzNi4yMTg3NSAtMzAuMDQ2ODc1IEMgMzcuNzE4NzUgLTI2Ljc5Njg3NSAzOS44ODI4MTIgLTI0LjIzNDM3NSA0Mi43MTg3NSAtMjIuMzU5Mzc1IEMgNDUuNTUwNzgxIC0yMC40ODQzNzUgNDguODkwNjI1IC0xOS41NDY4NzUgNTIuNzM0Mzc1IC0xOS41NDY4NzUgWiBNIDUyLjczNDM3NSAtMTkuNTQ2ODc1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTAxOC4zNTE5MDgsIDgwNS4xMjQ5MTEpIj48Zz48cGF0aCBkPSJNIDkuMjk2ODc1IDAgTCA5LjI5Njg3NSAtMTE3IEwgMzQuMTQwNjI1IC0xMTcgTCAzNC4xNDA2MjUgMCBaIE0gOS4yOTY4NzUgMCAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwNjEuNjIzNTcyLCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi4yNSAwIEMgNDIuOTU3MDMxIDAgMzQuNzg1MTU2IC0xLjczNDM3NSAyNy43MzQzNzUgLTUuMjAzMTI1IEMgMjAuNjc5Njg4IC04LjY3OTY4OCAxNS4yMDMxMjUgLTEzLjQ4ODI4MSAxMS4yOTY4NzUgLTE5LjYyNSBDIDcuMzk4NDM4IC0yNS43Njk1MzEgNS40NTMxMjUgLTMyLjkwNjI1IDUuNDUzMTI1IC00MS4wMzEyNSBDIDUuNDUzMTI1IC01MC4wMDc4MTIgNy4zMjAzMTIgLTU3LjcwMzEyNSAxMS4wNjI1IC02NC4xMDkzNzUgQyAxNC44MDA3ODEgLTcwLjUyMzQzOCAxOS43OTY4NzUgLTc1LjQ2ODc1IDI2LjA0Njg3NSAtNzguOTM3NSBDIDMyLjI5Njg3NSAtODIuNDA2MjUgMzkuMjEwOTM4IC04NC4xNDA2MjUgNDYuNzk2ODc1IC04NC4xNDA2MjUgQyA1NS40NTMxMjUgLTg0LjE0MDYyNSA2Mi42OTE0MDYgLTgyLjMyMDMxMiA2OC41MTU2MjUgLTc4LjY4NzUgQyA3NC4zMzU5MzggLTc1LjA2MjUgNzguNzQyMTg4IC03MC4xMjUgODEuNzM0Mzc1IC02My44NzUgQyA4NC43MzQzNzUgLTU3LjYyNSA4Ni4yMzQzNzUgLTUwLjQ4ODI4MSA4Ni4yMzQzNzUgLTQyLjQ2ODc1IEMgODYuMjM0Mzc1IC00MS4wODIwMzEgODYuMTQ4NDM4IC0zOS40NTMxMjUgODUuOTg0Mzc1IC0zNy41NzgxMjUgQyA4NS44MjgxMjUgLTM1LjcxMDkzOCA4NS42NDQ1MzEgLTM0LjI0MjE4OCA4NS40Mzc1IC0zMy4xNzE4NzUgTCAzMS41NzgxMjUgLTMzLjE3MTg3NSBDIDMyLjIxMDkzOCAtMzAuMzk4NDM4IDMzLjQzNzUgLTI4LjA1MDc4MSAzNS4yNSAtMjYuMTI1IEMgMzcuMDcwMzEyIC0yNC4xOTUzMTIgMzkuMzc1IC0yMi43ODEyNSA0Mi4xNTYyNSAtMjEuODc1IEMgNDQuOTM3NSAtMjAuOTY4NzUgNDguMDM1MTU2IC0yMC41MTU2MjUgNTEuNDUzMTI1IC0yMC41MTU2MjUgTCA3Ni42MDkzNzUgLTIwLjUxNTYyNSBMIDc2LjYwOTM3NSAwIFogTSAzMC45Mzc1IC00OC43MTg3NSBMIDYyLjE4NzUgLTQ4LjcxODc1IEMgNjEuOTc2NTYyIC01MC40Mzc1IDYxLjY2MDE1NiAtNTIuMDkzNzUgNjEuMjM0Mzc1IC01My42ODc1IEMgNjAuODA0Njg4IC01NS4yODkwNjIgNjAuMTMyODEyIC01Ni43MDcwMzEgNTkuMjE4NzUgLTU3LjkzNzUgQyA1OC4zMTI1IC01OS4xNjQwNjIgNTcuMjY5NTMxIC02MC4yMzQzNzUgNTYuMDkzNzUgLTYxLjE0MDYyNSBDIDU0LjkxNDA2MiAtNjIuMDU0Njg4IDUzLjU1MDc4MSAtNjIuNzgxMjUgNTIgLTYzLjMxMjUgQyA1MC40NTcwMzEgLTYzLjg0Mzc1IDQ4LjcyMjY1NiAtNjQuMTA5Mzc1IDQ2Ljc5Njg3NSAtNjQuMTA5Mzc1IEMgNDQuMzM1OTM4IC02NC4xMDkzNzUgNDIuMTQ0NTMxIC02My42Nzk2ODggNDAuMjE4NzUgLTYyLjgyODEyNSBDIDM4LjMwMDc4MSAtNjEuOTcyNjU2IDM2LjcwMzEyNSAtNjAuODIwMzEyIDM1LjQyMTg3NSAtNTkuMzc1IEMgMzQuMTQwNjI1IC01Ny45Mzc1IDMzLjE0ODQzOCAtNTYuMjgxMjUgMzIuNDUzMTI1IC01NC40MDYyNSBDIDMxLjc2NTYyNSAtNTIuNTM5MDYyIDMxLjI1NzgxMiAtNTAuNjQ0NTMxIDMwLjkzNzUgLTQ4LjcxODc1IFogTSAzMC45Mzc1IC00OC43MTg3NSAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExNTIuOTc4NDQ5LCA4MDUuMTI0OTExKSI+PGcvPjwvZz48L2c+PC9zdmc+" alt="Palpawble" style="height:26px;width:auto;display:block"/>
+    </a>
+    <div class="lp-nav-links">
+      <a class="lp-nav-link" href="#features">Fonctionnalités</a>
+      <a class="lp-nav-link" href="#story">Témoignages</a>
+      <a class="lp-nav-link" href="#how">Comment ça marche</a>
+      <a class="lang-switch" href="index.html"><span class="icon-xs icon">language</span>EN</a>
+      <button class="btn lp-nav-link" onclick="openModal('login')">Connexion</button>
+      <button class="btn btn-nav-cta" onclick="showDemoPage()">Essayer la démo</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow fade-in">
+        <span class="icon-xs icon">pets</span>
+        Navigation en soins pour animaux · Partout dans le monde
+      </div>
+      <h1 class="hero-h1 fade-in fade-in-d1">
+        La sérénité, à chaque<br>
+        <span class="hero-line2">urgence <em>animale.</em></span>
+      </h1>
+      <p class="hero-sub fade-in fade-in-d2">
+        Palpawble aide les propriétaires d'animaux à trouver des soins vétérinaires abordables, à débloquer un soutien financier et à prendre des décisions claires — même à 2 h du matin quand tout semble impossible.
+      </p>
+      <div class="hero-ctas fade-in fade-in-d3">
+        <button class="btn btn-hero-primary" onclick="showDemoPage()">
+          <span class="icon icon-sm">play_circle</span>Essayer la démo
+        </button>
+        <button class="btn btn-hero-ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+          <span class="icon icon-sm">info</span>En savoir plus
+        </button>
+      </div>
+      <div class="fade-in fade-in-d3" style="margin-top:-12px;margin-bottom:20px">
+        <span style="font-size:12px;color:var(--on-surf-v);display:inline-flex;align-items:center;gap:5px">
+          <span style="color:var(--primary);font-size:13px">✓</span>
+          Gratuit à explorer · Aucune carte requise · Accès bêta envoyé par courriel
+        </span>
+      </div>
+      <div class="hero-trust fade-in fade-in-d4">
+        <div class="trust-item"><div class="trust-dot"></div>Accès bêta par courriel</div>
+        <div class="trust-item"><div class="trust-dot"></div>Aucune carte de crédit requise</div>
+        <div class="trust-item"><div class="trust-dot"></div>Disponible partout dans le monde</div>
+      </div>
+    </div>
+
+    <!-- APP MOCKUP -->
+    <div class="hero-visual fade-in fade-in-d2">
+      <div style="position:relative">
+        <div class="mockup-card">
+          <div class="mockup-header">
+            <div class="mockup-header-deco"></div>
+            <div class="mockup-logo">
+              <div class="mockup-logo-dot"><span class="icon icon-fill" style="color:var(--primary-fix);font-size:14px">pets</span></div>
+              <span class="mockup-logo-name">Palpawble</span>
+            </div>
+            <div class="mockup-pet">
+              <div class="mockup-avatar">🐱</div>
+              <div>
+                <div class="mockup-pet-name">Misty</div>
+                <div class="mockup-pet-sub">Female · Domestic Shorthair · 4 yrs</div>
+              </div>
+            </div>
+            <div class="mockup-score-row">
+              <span class="mockup-score-label">Indice de santé</span>
+              <span class="mockup-score-val">87/100</span>
+            </div>
+            <div class="mockup-bar-track"><div class="mockup-bar-fill"></div></div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-stat-row">
+              <div class="mockup-stat"><div class="mockup-stat-n">2,4 k$</div><div class="mockup-stat-l">Subventions</div></div>
+              <div class="mockup-stat"><div class="mockup-stat-n">42</div><div class="mockup-stat-l">Cliniques</div></div>
+              <div class="mockup-stat"><div class="mockup-stat-n">0%</div><div class="mockup-stat-l">Financement</div></div>
+            </div>
+            <div class="mockup-card-mini">
+              <div class="mockup-card-mini-icon" style="background:var(--primary-fix)"><span class="icon icon-fill" style="color:var(--primary);font-size:16px">volunteer_activism</span></div>
+              <div>
+                <div class="mockup-card-mini-title">Subvention soins d'urgence</div>
+                <div class="mockup-card-mini-sub">Nouveau · Jusqu'à 500 $</div>
+              </div>
+              <span class="mockup-card-mini-val">Postuler →</span>
+            </div>
+            <div class="mockup-card-mini">
+              <div class="mockup-card-mini-icon" style="background:var(--sec-cont)"><span class="icon icon-fill" style="color:var(--secondary);font-size:16px">local_hospital</span></div>
+              <div>
+                <div class="mockup-card-mini-title">Urgence vétérinaire East Van</div>
+                <div class="mockup-card-mini-sub">0,8 km · Ouvert 24/7</div>
+              </div>
+              <span class="mockup-card-mini-val" style="color:var(--secondary)">Appeler →</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-badge-float">
+          <div class="hero-badge-float-icon"><span class="icon icon-fill" style="color:var(--primary)">check_circle</span></div>
+          <div>
+            <div class="hero-badge-float-title">Subvention approuvée!</div>
+            <div class="hero-badge-float-sub">500 $ · Fondation Faraday</div>
+          </div>
+        </div>
+        <div class="hero-badge-float2">
+          <span class="icon icon-fill" style="color:var(--primary-fix)">location_on</span>
+          <div>
+            <div class="hero-badge-float2-text">8 cliniques ouvertes maintenant</div>
+            <div class="hero-badge-float2-sub">Près de vous</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stats-inner">
+      <div class="stat-big">
+        <div class="stat-big-num">&lt;<span>4</span></div>
+        <div class="stat-big-label">minutes pour générer<br>un plan de financement personnalisé</div>
+      </div>
+      <div class="stats-divider"></div>
+      <div class="stat-big">
+        <div class="stat-big-num"><span>3</span></div>
+        <div class="stat-big-label">pistes de financement adaptées<br>retournées par session</div>
+      </div>
+      <div class="stats-divider"></div>
+      <div class="stat-big">
+        <div class="stat-big-num"><span>10</span></div>
+        <div class="stat-big-label">provinces couvertes<br>à travers le Canada</div>
+      </div>
+      <div class="stats-divider"></div>
+      <div class="stat-big">
+        <div class="stat-big-num">+<span>150</span></div>
+        <div class="stat-big-label">guides et listes de vérification<br>publiés, et ça continue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-eyebrow">Tout ce dont vous avez besoin</div>
+    <h2 class="section-h2">Conçu pour le <em>moment</em><br>où tout semble trop lourd.</h2>
+    <p class="section-sub">Palpawble n'est pas un autre répertoire de cliniques. C'est un compagnon complet — de la recherche de soins abordables au déblocage de subventions, jusqu'à la prise de décisions calmes sous pression.</p>
+
+    <div class="features-grid">
+
+      <!-- Large card: Care Finder -->
+      <div class="feature-card feature-card-large">
+        <div>
+          <div class="feature-icon-wrap" style="background:var(--primary-fix)">
+            <span class="icon icon-fill" style="color:var(--primary);font-size:26px">map</span>
+          </div>
+          <div class="feature-title">Recherche de soins abordables</div>
+          <div class="feature-desc">Recherchez par code postal. Filtrez par ouvert maintenant, urgence 24 h, plans de paiement ou organisme à but non lucratif. Chaque clinique affiche des indications de transparence des coûts et des notes d'admissibilité — aucune surprise.</div>
+          <button class="feature-learn btn">Explorer les cliniques <span class="icon-xs icon">arrow_forward</span></button>
+        </div>
+        <div class="feature-visual">
+          <div class="fv-row">
+            <div class="fv-icon" style="background:var(--tert-cont)"><span class="icon" style="color:var(--tertiary);font-size:16px">local_hospital</span></div>
+            <div><div class="fv-title">Paws & Hearts Wellness</div><div class="fv-sub">2,4 km · Organisme caritatif · Échelle variable</div></div>
+            <div class="fv-val" style="color:var(--primary)">→</div>
+          </div>
+          <div class="fv-row">
+            <div class="fv-icon" style="background:var(--primary-fix)"><span class="icon" style="color:var(--primary);font-size:16px">emergency</span></div>
+            <div><div class="fv-title">Urgence vétérinaire East Van</div><div class="fv-sub">0,8 km · Ouvert 24/7 · Financement 0%</div></div>
+            <div class="fv-val" style="color:var(--emergency)">Appeler</div>
+          </div>
+          <div class="fv-row">
+            <div class="fv-icon" style="background:var(--sec-cont)"><span class="icon" style="color:var(--secondary);font-size:16px">volunteer_activism</span></div>
+            <div><div class="fv-title">Fondation Faraday</div><div class="fv-sub">National · Subventions jusqu'à 500 $</div></div>
+            <div class="fv-val" style="color:var(--secondary)">Postuler</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Hub -->
+      <div class="feature-card">
+        <div class="feature-card-accent" style="background:rgba(253,186,157,0.5)"></div>
+        <div class="feature-icon-wrap" style="background:var(--tert-cont)">
+          <span class="icon icon-fill" style="color:var(--tertiary);font-size:26px">payments</span>
+        </div>
+        <div class="feature-title">Carrefour des options financières</div>
+        <div class="feature-desc">Subventions, financement à 0%, modèles de sociofinancement et suivi de fonds d'urgence. Chaque option vient avec des notes d'admissibilité et un lien d'action direct — aucune impasse.</div>
+        <button class="feature-learn btn">Voir les options financières <span class="icon-xs icon">arrow_forward</span></button>
+      </div>
+
+      <!-- Decision Guide -->
+      <div class="feature-card">
+        <div class="feature-card-accent" style="background:rgba(196,232,247,0.6)"></div>
+        <div class="feature-icon-wrap" style="background:var(--sec-cont)">
+          <span class="icon icon-fill" style="color:var(--secondary);font-size:26px">volunteer_activism</span>
+        </div>
+        <div class="feature-title">Guide de décision d'urgence</div>
+        <div class="feature-desc">Trois questions honnêtes — type d'animal, symptôme, budget — et vous obtenez un plan de soins personnalisé avec estimations de coûts, prochaines étapes et questions à poser à votre vétérinaire. Sans jamais juger.</div>
+        <button class="feature-learn btn">Essayer le guide <span class="icon-xs icon">arrow_forward</span></button>
+      </div>
+
+      <!-- Pet Profile -->
+      <div class="feature-card">
+        <div class="feature-card-accent" style="background:rgba(161,242,226,0.5)"></div>
+        <div class="feature-icon-wrap" style="background:var(--primary-fix)">
+          <span class="icon icon-fill" style="color:var(--primary);font-size:26px">account_circle</span>
+        </div>
+        <div class="feature-title">Profils intelligents pour animaux</div>
+        <div class="feature-desc">Un profil par animal — médicaments, conditions, carnet de vaccination, notes du vétérinaire. Tout au même endroit pour ne plus jamais chercher en salle d'attente.</div>
+        <button class="feature-learn btn">Voir votre tableau de bord <span class="icon-xs icon">arrow_forward</span></button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STORY SECTION -->
+  <section class="story-section" id="story">
+    <div class="story-bg-blob1"></div>
+    <div class="story-bg-blob2"></div>
+    <div class="story-inner">
+      <div>
+        <div class="story-tag"><span class="icon-xs icon">favorite</span>Histoire vraie · Toronto, ON</div>
+        <h2 class="story-h2">Comment Sarah a sauvé<br>Momo avec <em>47 $</em><br>dans son compte.</h2>
+        <blockquote class="story-quote">
+          « Il était 1 h 47 du matin. Momo ne pouvait plus respirer. Il me restait 47 $ avant la paie et je ne savais pas où aller. J'ai trouvé Palpawble et en 4 minutes j'avais l'adresse d'une clinique, une demande de subvention commencée, et une liste de questions à poser au vétérinaire. Elle dort sur mes genoux en ce moment. »
+        </blockquote>
+        <div class="story-steps">
+          <div class="story-step">
+            <div class="story-step-num">1</div>
+            <div class="story-step-text">Sarah a ouvert Palpawble à 1 h 47. Le <strong>Guide de décision</strong> a évalué les symptômes de Momo comme urgents — en 60 secondes.</div>
+          </div>
+          <div class="story-step">
+            <div class="story-step-num">2</div>
+            <div class="story-step-text">La <strong>recherche de soins</strong> a montré l'urgence vétérinaire East Van, à 0,8 km, ouverte 24/7, avec financement Scratchpay à 0%.</div>
+          </div>
+          <div class="story-step">
+            <div class="story-step-num">3</div>
+            <div class="story-step-text">Le <strong>carrefour financier</strong> a fait ressortir la subvention de la Fondation Faraday. Sarah a postulé en 8 minutes, approuvée en 18 heures.</div>
+          </div>
+          <div class="story-step">
+            <div class="story-step-num">4</div>
+            <div class="story-step-text">Total déboursé : <strong>0 $</strong>. Momo a reçu des soins d'urgence complets. La subvention a couvert 420 $ de la facture.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Story card -->
+      <div class="story-card">
+        <div class="story-card-header">
+          <div class="story-card-header-deco"></div>
+          <div class="story-avatar">🐱</div>
+          <div>
+            <div class="story-person-name">Sarah et Momo</div>
+            <div class="story-person-meta">Toronto, ON · Utilise Palpawble depuis 2024</div>
+          </div>
+        </div>
+        <div class="story-card-phone-mock">
+          <div class="scpm-row">
+            <div class="scpm-dot" style="background:#FA746F"></div>
+            <div class="scpm-bar" style="background:rgba(255,255,255,0.2);width:80%"></div>
+            <div class="scpm-text">1 h 47</div>
+          </div>
+          <div class="scpm-row">
+            <div class="scpm-dot" style="background:var(--primary-fix)"></div>
+            <div class="scpm-bar" style="background:rgba(255,255,255,0.15);width:60%"></div>
+            <div class="scpm-text">Guide de décision</div>
+          </div>
+        </div>
+        <div class="story-card-body">
+          <div class="story-timeline">
+            <div class="stl-item stl-dot-line">
+              <div class="stl-dot" style="background:var(--emergency)"></div>
+              <div class="stl-text"><strong>Momo s'effondre.</strong> Difficultés respiratoires. Sarah ouvre Palpawble.</div>
+              <div class="stl-time">1 h 47</div>
+            </div>
+            <div class="stl-item stl-dot-line">
+              <div class="stl-dot" style="background:var(--primary-fix)"></div>
+              <div class="stl-text"><strong>Soins urgents trouvés.</strong> Urgence East Van repérée. À 0,8 km, ouverte maintenant.</div>
+              <div class="stl-time">1 h 51</div>
+            </div>
+            <div class="stl-item stl-dot-line">
+              <div class="stl-dot" style="background:var(--sec-cont)"></div>
+              <div class="stl-text"><strong>Subvention trouvée.</strong> Fondation Faraday. Jusqu'à 500 $. Demande commencée.</div>
+              <div class="stl-time">1 h 55</div>
+            </div>
+            <div class="stl-item">
+              <div class="stl-dot" style="background:#F4C23D"></div>
+              <div class="stl-text"><strong>Momo soignée.</strong> Asthme félin. Rétablissement complet. De retour à la maison le matin.</div>
+              <div class="stl-time">4 h 30</div>
+            </div>
+          </div>
+          <div class="story-outcome">
+            <div class="story-outcome-icon"><span class="icon icon-fill" style="color:var(--primary);font-size:16px">check_circle</span></div>
+            <div>
+              <div class="story-outcome-title">Total déboursé : 0 $</div>
+              <div class="story-outcome-sub">420 $ couverts par la subvention de la Fondation Faraday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div id="how">
+    <div class="how-section">
+      <div class="section-eyebrow">Simple comme bonjour</div>
+      <h2 class="section-h2">De la panique au <em>plan</em><br>en moins de 4 minutes.</h2>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-num">1</div>
+          <div class="how-step-title">Créez un compte gratuit</div>
+          <div class="how-step-desc">Inscrivez-vous en moins d'une minute. Ajoutez le nom de votre animal, son espèce et une photo. Aucune carte de crédit requise.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">2</div>
+          <div class="how-step-title">Décrivez la situation</div>
+          <div class="how-step-desc">Utilisez le Guide de décision ou recherchez directement dans la recherche de soins. Dites-nous où vous êtes et ce qui se passe.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">3</div>
+          <div class="how-step-title">Obtenez une prochaine étape claire</div>
+          <div class="how-step-desc">Un parcours de soins personnalisé avec cliniques jumelées, options financières et questions à poser à votre vétérinaire.</div>
+        </div>
+        <div class="how-step">
+          <div class="how-step-num">4</div>
+          <div class="how-step-title">Agissez en toute sérénité</div>
+          <div class="how-step-desc">Appelez la clinique, postulez pour la subvention, ou discutez avec un défenseur — tout depuis un seul endroit, à toute heure.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORE TESTIMONIALS -->
+  <div class="testimonials">
+    <div class="testimonials-inner">
+      <div class="section-eyebrow">Ce que disent les propriétaires d'animaux</div>
+      <h2 class="section-h2" style="margin-bottom:0">La confiance de familles<br>partout dans le <em>monde.</em></h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">« Je ne savais pas que des subventions comme celle-ci existaient. Palpawble m'a trouvé 350 $ pour la chirurgie dentaire de Biscuit en 10 minutes. J'ai pleuré de vraies larmes de joie. »</p>
+          <div class="testimonial-divider"></div>
+          <div class="testimonial-author">
+            <div class="ta-avatar">🐶</div>
+            <div><div class="ta-name">Marcus T.</div><div class="ta-meta">Vancouver, BC · Propriétaire de chien</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">« Le Guide de décision m'a guidée exactement sur les questions à poser au vétérinaire. Je suis arrivée préparée plutôt que paniquée. Ça n'a pas de prix. »</p>
+          <div class="testimonial-divider"></div>
+          <div class="testimonial-author">
+            <div class="ta-avatar">🐱</div>
+            <div><div class="ta-name">Priya K.</div><div class="ta-meta">Scarborough, ON · Propriétaire de chat</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">« J'ai configuré le suivi de fonds d'urgence pour mon lapin. Trois mois plus tard, j'avais économisé 240 $ et je les ai vraiment utilisés. La meilleure décision d'application que j'ai prise. »</p>
+          <div class="testimonial-divider"></div>
+          <div class="testimonial-author">
+            <div class="ta-avatar">🐰</div>
+            <div><div class="ta-name">Jen R.</div><div class="ta-meta">Calgary, AB · Propriétaire de lapin</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2 class="cta-h2">Votre animal mérite<br><em>la dignité</em> à chaque crise.</h2>
+      <p class="cta-sub">Rejoignez des milliers de propriétaires d'animaux qui ont trouvé des soins, débloqué des subventions, et ne se sont plus jamais sentis seuls face à une urgence.</p>
+      <div class="cta-form">
+        <input class="cta-email" type="email" placeholder="Entrez votre adresse courriel…"/>
+        <button class="btn btn-cta-submit" onclick="showDemoPage()">Essayer la démo</button>
+      </div>
+      <p class="cta-privacy">Aucune carte de crédit · Palier gratuit à vie · <a>Politique de confidentialité</a></p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-text">
+            <span class="icon icon-fill" style="color:var(--primary-fix);font-size:20px">pets</span>
+            Palpawble
+          </div>
+          <div class="footer-brand-sub">Navigation compatissante en soins pour animaux, pour les familles partout. Trouvez des soins, accédez à des subventions, et restez serein — à toute heure.</div>
+        </div>
+        <div>
+          <div class="footer-col-title">Produit</div>
+          <button class="footer-link">Recherche de soins</button>
+          <button class="footer-link">Carrefour financier</button>
+          <button class="footer-link">Guide de décision</button>
+          <button class="footer-link">Profils animaux</button>
+          <button class="footer-link">Suivi de fonds</button>
+        </div>
+        <div>
+          <div class="footer-col-title">Entreprise</div>
+          <button class="footer-link">À propos</button>
+          <button class="footer-link">Notre histoire</button>
+          <button class="footer-link">Blogue</button>
+          <button class="footer-link">Carrières</button>
+          <button class="footer-link">Contact</button>
+        </div>
+        <div>
+          <div class="footer-col-title">Soutien</div>
+          <button class="footer-link">Centre d'aide</button>
+          <button class="footer-link">Communauté</button>
+          <button class="footer-link">Cliniques : inscrivez la vôtre</button>
+          <button class="footer-link">Fournisseurs de subventions</button>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 Palpawble Inc. · Tous droits réservés</div>
+        <div class="footer-legal">
+          <a href="#">Confidentialité</a>
+          <a href="#">Conditions</a>
+          <a href="#">Accessibilité</a>
+          <a href="#">Ceci n'est pas un avis médical</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /landing -->
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     LOGIN MODAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-wrap">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()"><span class="icon icon-xs">close</span></button>
+      <div class="modal-logo">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjI5MCA2ODAgOTYwIDE0NSIgdmVyc2lvbj0iMS4wIj4KPGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDQuNTI5MzAzLCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA5Ljc4MTI1IDAgTCA5Ljc4MTI1IC0xMTIuMjAzMTI1IEwgNTguMDE1NjI1IC0xMTIuMjAzMTI1IEMgNjUuNDkyMTg4IC0xMTIuMjAzMTI1IDcyLjM1OTM3NSAtMTEwLjQ4ODI4MSA3OC42MDkzNzUgLTEwNy4wNjI1IEMgODQuODY3MTg4IC0xMDMuNjQ0NTMxIDg5Ljg2NzE4OCAtOTguOTE0MDYyIDkzLjYwOTM3NSAtOTIuODc1IEMgOTcuMzQ3NjU2IC04Ni44NDM3NSA5OS4yMTg3NSAtNzkuODc1IDk5LjIxODc1IC03MS45Njg3NSBDIDk5LjIxODc1IC02NC4wNjI1IDk3LjM0NzY1NiAtNTcuMDM1MTU2IDkzLjYwOTM3NSAtNTAuODkwNjI1IEMgODkuODY3MTg4IC00NC43NDIxODggODQuODk4NDM4IC0zOS45NjA5MzggNzguNzAzMTI1IC0zNi41NDY4NzUgQyA3Mi41MDM5MDYgLTMzLjEyODkwNiA2NS42MDkzNzUgLTMxLjQyMTg3NSA1OC4wMTU2MjUgLTMxLjQyMTg3NSBMIDM2LjcwMzEyNSAtMzEuNDIxODc1IEwgMzYuNzAzMTI1IDAgWiBNIDM2LjcwMzEyNSAtNTQuMDE1NjI1IEwgNTQuOTY4NzUgLTU0LjAxNTYyNSBDIDU4LjE3NTc4MSAtNTQuMDE1NjI1IDYxLjA2MjUgLTU0LjcwNzAzMSA2My42MjUgLTU2LjA5Mzc1IEMgNjYuMTk1MzEyIC01Ny40ODgyODEgNjguMjgxMjUgLTU5LjUxOTUzMSA2OS44NzUgLTYyLjE4NzUgQyA3MS40NzY1NjIgLTY0Ljg2MzI4MSA3Mi4yODEyNSAtNjguMDcwMzEyIDcyLjI4MTI1IC03MS44MTI1IEMgNzIuMjgxMjUgLTc1LjU1MDc4MSA3MS40NzY1NjIgLTc4Ljc1MzkwNiA2OS44NzUgLTgxLjQyMTg3NSBDIDY4LjI4MTI1IC04NC4wOTc2NTYgNjYuMTcxODc1IC04Ni4xNTYyNSA2My41NDY4NzUgLTg3LjU5Mzc1IEMgNjAuOTI5Njg4IC04OS4wMzEyNSA1OC4wNzAzMTIgLTg5Ljc1IDU0Ljk2ODc1IC04OS43NSBMIDM2LjcwMzEyNSAtODkuNzUgWiBNIDM2LjcwMzEyNSAtNTQuMDE1NjI1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDA0LjUzNDgxOCwgODA1LjEyNDkxMSkiPjxnPjxwYXRoIGQ9Ik0gNDIuMzEyNSAxLjkyMTg3NSBDIDM1LjA1MDc4MSAxLjkyMTg3NSAyOC42NDA2MjUgMC4wNTA3ODEyIDIzLjA3ODEyNSAtMy42ODc1IEMgMTcuNTIzNDM4IC03LjQyNTc4MSAxMy4xOTUzMTIgLTEyLjQ3MjY1NiAxMC4wOTM3NSAtMTguODI4MTI1IEMgNyAtMjUuMTkxNDA2IDUuNDUzMTI1IC0zMi4zNzg5MDYgNS40NTMxMjUgLTQwLjM5MDYyNSBDIDUuNDUzMTI1IC00OC43MjI2NTYgNy4yNjU2MjUgLTU2LjE3NTc4MSAxMC44OTA2MjUgLTYyLjc1IEMgMTQuNTIzNDM4IC02OS4zMjAzMTIgMTkuNjc5Njg4IC03NC41MzEyNSAyNi4zNTkzNzUgLTc4LjM3NSBDIDMzLjA0Njg3NSAtODIuMjE4NzUgNDAuOTI1NzgxIC04NC4xNDA2MjUgNTAgLTg0LjE0MDYyNSBDIDU5LjE5NTMxMiAtODQuMTQwNjI1IDY3LjAyMzQzOCAtODIuMjQyMTg4IDczLjQ4NDM3NSAtNzguNDUzMTI1IEMgNzkuOTUzMTI1IC03NC42NjAxNTYgODQuOTIxODc1IC02OS40NzY1NjIgODguMzkwNjI1IC02Mi45MDYyNSBDIDkxLjg2NzE4OCAtNTYuMzMyMDMxIDkzLjYwOTM3NSAtNDguOTg4MjgxIDkzLjYwOTM3NSAtNDAuODc1IEwgOTMuNjA5Mzc1IDAgTCA2OS4yMzQzNzUgMCBMIDY5LjIzNDM3NSAtMTMuMTQwNjI1IEwgNjguNTkzNzUgLTEzLjE0MDYyNSBDIDY3LjEwMTU2MiAtMTAuMjUzOTA2IDY1LjE3OTY4OCAtNy42NjAxNTYgNjIuODI4MTI1IC01LjM1OTM3NSBDIDYwLjQ3MjY1NiAtMy4wNjY0MDYgNTcuNjEzMjgxIC0xLjI4MTI1IDU0LjI1IDAgQyA1MC44ODI4MTIgMS4yODEyNSA0Ni45MDYyNSAxLjkyMTg3NSA0Mi4zMTI1IDEuOTIxODc1IFogTSA0OS42ODc1IC0xOS41NDY4NzUgQyA1My40MjU3ODEgLTE5LjU0Njg3NSA1Ni43MTA5MzggLTIwLjQ4NDM3NSA1OS41NDY4NzUgLTIyLjM1OTM3NSBDIDYyLjM3ODkwNiAtMjQuMjM0Mzc1IDY0LjUzOTA2MiAtMjYuODI4MTI1IDY2LjAzMTI1IC0zMC4xNDA2MjUgQyA2Ny41MzEyNSAtMzMuNDUzMTI1IDY4LjI4MTI1IC0zNy4xMzI4MTIgNjguMjgxMjUgLTQxLjE4NzUgQyA2OC4yODEyNSAtNDUuMTQ0NTMxIDY3LjUzMTI1IC00OC43MjI2NTYgNjYuMDMxMjUgLTUxLjkyMTg3NSBDIDY0LjUzOTA2MiAtNTUuMTI4OTA2IDYyLjM3ODkwNiAtNTcuNjY0MDYyIDU5LjU0Njg3NSAtNTkuNTMxMjUgQyA1Ni43MTA5MzggLTYxLjQwNjI1IDUzLjQyNTc4MSAtNjIuMzQzNzUgNDkuNjg3NSAtNjIuMzQzNzUgQyA0NS44NDM3NSAtNjIuMzQzNzUgNDIuNDc2NTYyIC02MS40MDYyNSAzOS41OTM3NSAtNTkuNTMxMjUgQyAzNi43MDcwMzEgLTU3LjY2NDA2MiAzNC41MTU2MjUgLTU1LjEyODkwNiAzMy4wMTU2MjUgLTUxLjkyMTg3NSBDIDMxLjUyMzQzOCAtNDguNzIyNjU2IDMwLjc4MTI1IC00NS4xNDQ1MzEgMzAuNzgxMjUgLTQxLjE4NzUgQyAzMC43ODEyNSAtMzcuMTMyODEyIDMxLjUyMzQzOCAtMzMuNDUzMTI1IDMzLjAxNTYyNSAtMzAuMTQwNjI1IEMgMzQuNTE1NjI1IC0yNi44MjgxMjUgMzYuNzA3MDMxIC0yNC4yMzQzNzUgMzkuNTkzNzUgLTIyLjM1OTM3NSBDIDQyLjQ3NjU2MiAtMjAuNDg0Mzc1IDQ1Ljg0Mzc1IC0xOS41NDY4NzUgNDkuNjg3NSAtMTkuNTQ2ODc1IFogTSA0OS42ODc1IC0xOS41NDY4NzUgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MDcuMjY1MDM0LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA5LjI5Njg3NSAwIEwgOS4yOTY4NzUgLTExNyBMIDM0LjE0MDYyNSAtMTE3IEwgMzQuMTQwNjI1IDAgWiBNIDkuMjk2ODc1IDAgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1NTAuNTM2NzQ0LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi43MzQzNzUgLTg0LjE0MDYyNSBDIDU5LjY3OTY4OCAtODQuMTQwNjI1IDY1Ljg1MTU2MiAtODMuMDQ2ODc1IDcxLjI1IC04MC44NTkzNzUgQyA3Ni42NDQ1MzEgLTc4LjY3MTg3NSA4MS4yMzgyODEgLTc1LjU3MDMxMiA4NS4wMzEyNSAtNzEuNTYyNSBDIDg4LjgyMDMxMiAtNjcuNTYyNSA5MS43MzQzNzUgLTYyLjg1OTM3NSA5My43NjU2MjUgLTU3LjQ1MzEyNSBDIDk1Ljc5Njg3NSAtNTIuMDU0Njg4IDk2LjgxMjUgLTQ2LjEwMTU2MiA5Ni44MTI1IC0zOS41OTM3NSBDIDk2LjgxMjUgLTMxLjQ2ODc1IDk1LjEyODkwNiAtMjQuMjgxMjUgOTEuNzY1NjI1IC0xOC4wMzEyNSBDIDg4LjM5ODQzOCAtMTEuNzgxMjUgODMuNzczNDM4IC02Ljg5MDYyNSA3Ny44OTA2MjUgLTMuMzU5Mzc1IEMgNzIuMDE1NjI1IDAuMTYwMTU2IDY1LjE3NTc4MSAxLjkyMTg3NSA1Ny4zNzUgMS45MjE4NzUgQyA1NC4wNjI1IDEuOTIxODc1IDUwLjkzNzUgMS40OTIxODggNDggMC42NDA2MjUgQyA0NS4wNjI1IC0wLjIxMDkzOCA0Mi4zOTA2MjUgLTEuNDQxNDA2IDM5Ljk4NDM3NSAtMy4wNDY4NzUgQyAzNy41ODU5MzggLTQuNjQ4NDM4IDM1LjU4NTkzOCAtNi42MjUgMzMuOTg0Mzc1IC04Ljk2ODc1IEwgMzMuNSAtOC45Njg3NSBMIDMzLjUgMzQuNzgxMjUgTCA4LjY1NjI1IDM0Ljc4MTI1IEwgOC42NTYyNSAtMzkuNTkzNzUgQyA4LjY1NjI1IC00OC42NzU3ODEgMTAuNDY4NzUgLTU2LjUzMTI1IDE0LjA5Mzc1IC02My4xNTYyNSBDIDE3LjcyNjU2MiAtNjkuNzgxMjUgMjIuODU5Mzc1IC03NC45Mjk2ODggMjkuNDg0Mzc1IC03OC42MDkzNzUgQyAzNi4xMDkzNzUgLTgyLjI5Njg3NSA0My44NTkzNzUgLTg0LjE0MDYyNSA1Mi43MzQzNzUgLTg0LjE0MDYyNSBaIE0gNTIuNzM0Mzc1IC02Mi42NzE4NzUgQyA0OC44OTA2MjUgLTYyLjY3MTg3NSA0NS41NTA3ODEgLTYxLjczNDM3NSA0Mi43MTg3NSAtNTkuODU5Mzc1IEMgMzkuODgyODEyIC01Ny45OTIxODggMzcuNzE4NzUgLTU1LjQyOTY4OCAzNi4yMTg3NSAtNTIuMTcxODc1IEMgMzQuNzI2NTYyIC00OC45MTAxNTYgMzMuOTg0Mzc1IC00NS4yNSAzMy45ODQzNzUgLTQxLjE4NzUgQyAzMy45ODQzNzUgLTM3LjEzMjgxMiAzNC43MjY1NjIgLTMzLjUwMzkwNiAzNi4yMTg3NSAtMzAuMjk2ODc1IEMgMzcuNzE4NzUgLTI3LjA4NTkzOCAzOS44ODI4MTIgLTI0LjU0Njg3NSA0Mi43MTg3NSAtMjIuNjcxODc1IEMgNDUuNTUwNzgxIC0yMC44MDQ2ODggNDguODkwNjI1IC0xOS44NzUgNTIuNzM0Mzc1IC0xOS44NzUgQyA1Ni41NzgxMjUgLTE5Ljg3NSA1OS44OTA2MjUgLTIwLjgwNDY4OCA2Mi42NzE4NzUgLTIyLjY3MTg3NSBDIDY1LjQ1MzEyNSAtMjQuNTQ2ODc1IDY3LjYxMzI4MSAtMjcuMDg1OTM4IDY5LjE1NjI1IC0zMC4yOTY4NzUgQyA3MC43MDcwMzEgLTMzLjUwMzkwNiA3MS40ODQzNzUgLTM3LjEzMjgxMiA3MS40ODQzNzUgLTQxLjE4NzUgQyA3MS40ODQzNzUgLTQ1LjI1IDcwLjcwNzAzMSAtNDguOTEwMTU2IDY5LjE1NjI1IC01Mi4xNzE4NzUgQyA2Ny42MTMyODEgLTU1LjQyOTY4OCA2NS40NTMxMjUgLTU3Ljk5MjE4OCA2Mi42NzE4NzUgLTU5Ljg1OTM3NSBDIDU5Ljg5MDYyNSAtNjEuNzM0Mzc1IDU2LjU3ODEyNSAtNjIuNjcxODc1IDUyLjczNDM3NSAtNjIuNjcxODc1IFogTSA1Mi43MzQzNzUgLTYyLjY3MTg3NSAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDY1Mi43ODYxNzEsIDgwNS4xMjQ5MTEpIj48Zz48cGF0aCBkPSJNIDQyLjMxMjUgMS45MjE4NzUgQyAzNS4wNTA3ODEgMS45MjE4NzUgMjguNjQwNjI1IDAuMDUwNzgxMiAyMy4wNzgxMjUgLTMuNjg3NSBDIDE3LjUyMzQzOCAtNy40MjU3ODEgMTMuMTk1MzEyIC0xMi40NzI2NTYgMTAuMDkzNzUgLTE4LjgyODEyNSBDIDcgLTI1LjE5MTQwNiA1LjQ1MzEyNSAtMzIuMzc4OTA2IDUuNDUzMTI1IC00MC4zOTA2MjUgQyA1LjQ1MzEyNSAtNDguNzIyNjU2IDcuMjY1NjI1IC01Ni4xNzU3ODEgMTAuODkwNjI1IC02Mi43NSBDIDE0LjUyMzQzOCAtNjkuMzIwMzEyIDE5LjY3OTY4OCAtNzQuNTMxMjUgMjYuMzU5Mzc1IC03OC4zNzUgQyAzMy4wNDY4NzUgLTgyLjIxODc1IDQwLjkyNTc4MSAtODQuMTQwNjI1IDUwIC04NC4xNDA2MjUgQyA1OS4xOTUzMTIgLTg0LjE0MDYyNSA2Ny4wMjM0MzggLTgyLjI0MjE4OCA3My40ODQzNzUgLTc4LjQ1MzEyNSBDIDc5Ljk1MzEyNSAtNzQuNjYwMTU2IDg0LjkyMTg3NSAtNjkuNDc2NTYyIDg4LjM5MDYyNSAtNjIuOTA2MjUgQyA5MS44NjcxODggLTU2LjMzMjAzMSA5My42MDkzNzUgLTQ4Ljk4ODI4MSA5My42MDkzNzUgLTQwLjg3NSBMIDkzLjYwOTM3NSAwIEwgNjkuMjM0Mzc1IDAgTCA2OS4yMzQzNzUgLTEzLjE0MDYyNSBMIDY4LjU5Mzc1IC0xMy4xNDA2MjUgQyA2Ny4xMDE1NjIgLTEwLjI1MzkwNiA2NS4xNzk2ODggLTcuNjYwMTU2IDYyLjgyODEyNSAtNS4zNTkzNzUgQyA2MC40NzI2NTYgLTMuMDY2NDA2IDU3LjYxMzI4MSAtMS4yODEyNSA1NC4yNSAwIEMgNTAuODgyODEyIDEuMjgxMjUgNDYuOTA2MjUgMS45MjE4NzUgNDIuMzEyNSAxLjkyMTg3NSBaIE0gNDkuNjg3NSAtMTkuNTQ2ODc1IEMgNTMuNDI1NzgxIC0xOS41NDY4NzUgNTYuNzEwOTM4IC0yMC40ODQzNzUgNTkuNTQ2ODc1IC0yMi4zNTkzNzUgQyA2Mi4zNzg5MDYgLTI0LjIzNDM3NSA2NC41MzkwNjIgLTI2LjgyODEyNSA2Ni4wMzEyNSAtMzAuMTQwNjI1IEMgNjcuNTMxMjUgLTMzLjQ1MzEyNSA2OC4yODEyNSAtMzcuMTMyODEyIDY4LjI4MTI1IC00MS4xODc1IEMgNjguMjgxMjUgLTQ1LjE0NDUzMSA2Ny41MzEyNSAtNDguNzIyNjU2IDY2LjAzMTI1IC01MS45MjE4NzUgQyA2NC41MzkwNjIgLTU1LjEyODkwNiA2Mi4zNzg5MDYgLTU3LjY2NDA2MiA1OS41NDY4NzUgLTU5LjUzMTI1IEMgNTYuNzEwOTM4IC02MS40MDYyNSA1My40MjU3ODEgLTYyLjM0Mzc1IDQ5LjY4NzUgLTYyLjM0Mzc1IEMgNDUuODQzNzUgLTYyLjM0Mzc1IDQyLjQ3NjU2MiAtNjEuNDA2MjUgMzkuNTkzNzUgLTU5LjUzMTI1IEMgMzYuNzA3MDMxIC01Ny42NjQwNjIgMzQuNTE1NjI1IC01NS4xMjg5MDYgMzMuMDE1NjI1IC01MS45MjE4NzUgQyAzMS41MjM0MzggLTQ4LjcyMjY1NiAzMC43ODEyNSAtNDUuMTQ0NTMxIDMwLjc4MTI1IC00MS4xODc1IEMgMzAuNzgxMjUgLTM3LjEzMjgxMiAzMS41MjM0MzggLTMzLjQ1MzEyNSAzMy4wMTU2MjUgLTMwLjE0MDYyNSBDIDM0LjUxNTYyNSAtMjYuODI4MTI1IDM2LjcwNzAzMSAtMjQuMjM0Mzc1IDM5LjU5Mzc1IC0yMi4zNTkzNzUgQyA0Mi40NzY1NjIgLTIwLjQ4NDM3NSA0NS44NDM3NSAtMTkuNTQ2ODc1IDQ5LjY4NzUgLTE5LjU0Njg3NSBaIE0gNDkuNjg3NSAtMTkuNTQ2ODc1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzU1LjUxNjM4NywgODA1LjEyNDkxMSkiPjxnPjxwYXRoIGQ9Ik0gNDEuMTg3NSAxLjkyMTg3NSBDIDM1LjUzMTI1IDEuOTIxODc1IDMwLjI2OTUzMSAwLjgwMDc4MSAyNS40MDYyNSAtMS40Mzc1IEMgMjAuNTM5MDYyIC0zLjY4NzUgMTYuNjQwNjI1IC03LjEwOTM3NSAxMy43MDMxMjUgLTExLjcwMzEyNSBDIDEwLjc2NTYyNSAtMTYuMjk2ODc1IDkuMjk2ODc1IC0yMi4wNjY0MDYgOS4yOTY4NzUgLTI5LjAxNTYyNSBMIDkuMjk2ODc1IC04Mi4yMTg3NSBMIDM0LjE0MDYyNSAtODIuMjE4NzUgTCAzNC4xNDA2MjUgLTI1LjgxMjUgQyAzNC4xNDA2MjUgLTI0LjUxOTUzMSAzNC40NTcwMzEgLTIzLjMzNTkzOCAzNS4wOTM3NSAtMjIuMjY1NjI1IEMgMzUuNzM4MjgxIC0yMS4yMDMxMjUgMzYuNTkzNzUgLTIwLjM0NzY1NiAzNy42NTYyNSAtMTkuNzAzMTI1IEMgMzguNzI2NTYyIC0xOS4wNjY0MDYgMzkuOTA2MjUgLTE4Ljc1IDQxLjE4NzUgLTE4Ljc1IEMgNDIuNDY4NzUgLTE4Ljc1IDQzLjY0NDUzMSAtMTkuMDY2NDA2IDQ0LjcxODc1IC0xOS43MDMxMjUgQyA0NS43ODkwNjIgLTIwLjM0NzY1NiA0Ni42NDQ1MzEgLTIxLjIwMzEyNSA0Ny4yODEyNSAtMjIuMjY1NjI1IEMgNDcuOTI1NzgxIC0yMy4zMzU5MzggNDguMjUgLTI0LjUxOTUzMSA0OC4yNSAtMjUuODEyNSBMIDQ4LjI1IC01My4yMTg3NSBDIDQ4LjI1IC01OS44NDM3NSA0OS42MzI4MTIgLTY1LjQ1MzEyNSA1Mi40MDYyNSAtNzAuMDQ2ODc1IEMgNTUuMTg3NSAtNzQuNjQwNjI1IDU5LjAwNzgxMiAtNzguMTMyODEyIDYzLjg3NSAtODAuNTMxMjUgQyA2OC43MzgyODEgLTgyLjkzNzUgNzQuMjEwOTM4IC04NC4xNDA2MjUgODAuMjk2ODc1IC04NC4xNDA2MjUgQyA4Ni4zOTA2MjUgLTg0LjE0MDYyNSA5MS44MzU5MzggLTgyLjkzNzUgOTYuNjQwNjI1IC04MC41MzEyNSBDIDEwMS40NTMxMjUgLTc4LjEzMjgxMiAxMDUuMjUgLTc0LjY0MDYyNSAxMDguMDMxMjUgLTcwLjA0Njg3NSBDIDExMC44MTI1IC02NS40NTMxMjUgMTEyLjIwMzEyNSAtNTkuODQzNzUgMTEyLjIwMzEyNSAtNTMuMjE4NzUgTCAxMTIuMjAzMTI1IC0yNS44MTI1IEMgMTEyLjIwMzEyNSAtMjQuNTE5NTMxIDExMi41MTk1MzEgLTIzLjMzNTkzOCAxMTMuMTU2MjUgLTIyLjI2NTYyNSBDIDExMy44MDA3ODEgLTIxLjIwMzEyNSAxMTQuNjc5Njg4IC0yMC4zNDc2NTYgMTE1Ljc5Njg3NSAtMTkuNzAzMTI1IEMgMTE2LjkyMTg3NSAtMTkuMDY2NDA2IDExOC4xMjUgLTE4Ljc1IDExOS40MDYyNSAtMTguNzUgQyAxMjAuNjg3NSAtMTguNzUgMTIxLjg1OTM3NSAtMTkuMDY2NDA2IDEyMi45MjE4NzUgLTE5LjcwMzEyNSBDIDEyMy45OTIxODggLTIwLjM0NzY1NiAxMjQuODUxNTYyIC0yMS4yMDMxMjUgMTI1LjUgLTIyLjI2NTYyNSBDIDEyNi4xNDQ1MzEgLTIzLjMzNTkzOCAxMjYuNDY4NzUgLTI0LjUxOTUzMSAxMjYuNDY4NzUgLTI1LjgxMjUgTCAxMjYuNDY4NzUgLTgyLjIxODc1IEwgMTUxLjMxMjUgLTgyLjIxODc1IEwgMTUxLjMxMjUgLTI5LjAxNTYyNSBDIDE1MS4zMTI1IC0yMi4wNjY0MDYgMTQ5LjgzNTkzOCAtMTYuMjk2ODc1IDE0Ni44OTA2MjUgLTExLjcwMzEyNSBDIDE0My45NTMxMjUgLTcuMTA5Mzc1IDE0MC4wNTA3ODEgLTMuNjg3NSAxMzUuMTg3NSAtMS40Mzc1IEMgMTMwLjMzMjAzMSAwLjgwMDc4MSAxMjUuMDcwMzEyIDEuOTIxODc1IDExOS40MDYyNSAxLjkyMTg3NSBDIDExMy43NSAxLjkyMTg3NSAxMDguNDg4MjgxIDAuODAwNzgxIDEwMy42MjUgLTEuNDM3NSBDIDk4Ljc1NzgxMiAtMy42ODc1IDk0LjgzMjAzMSAtNy4xMDkzNzUgOTEuODQzNzUgLTExLjcwMzEyNSBDIDg4Ljg1MTU2MiAtMTYuMjk2ODc1IDg3LjM1OTM3NSAtMjIuMDY2NDA2IDg3LjM1OTM3NSAtMjkuMDE1NjI1IEwgODcuMzU5Mzc1IC01Ni4yNjU2MjUgQyA4Ny4zNTkzNzUgLTU3LjY0ODQzOCA4Ny4wMzUxNTYgLTU4Ljg3NSA4Ni4zOTA2MjUgLTU5LjkzNzUgQyA4NS43NTM5MDYgLTYxLjAwNzgxMiA4NC44OTg0MzggLTYxLjg2MzI4MSA4My44MjgxMjUgLTYyLjUgQyA4Mi43NTM5MDYgLTYzLjE0NDUzMSA4MS41NzgxMjUgLTYzLjQ2ODc1IDgwLjI5Njg3NSAtNjMuNDY4NzUgQyA3OS4wMTU2MjUgLTYzLjQ2ODc1IDc3LjgxMjUgLTYzLjE0NDUzMSA3Ni42ODc1IC02Mi41IEMgNzUuNTcwMzEyIC02MS44NjMyODEgNzQuNjkxNDA2IC02MS4wMDc4MTIgNzQuMDQ2ODc1IC01OS45Mzc1IEMgNzMuNDEwMTU2IC01OC44NzUgNzMuMDkzNzUgLTU3LjY0ODQzOCA3My4wOTM3NSAtNTYuMjY1NjI1IEwgNzMuMDkzNzUgLTI5LjAxNTYyNSBDIDczLjA5Mzc1IC0yMi4wNjY0MDYgNzEuNjE3MTg4IC0xNi4yOTY4NzUgNjguNjcxODc1IC0xMS43MDMxMjUgQyA2NS43MzQzNzUgLTcuMTA5Mzc1IDYxLjgzMjAzMSAtMy42ODc1IDU2Ljk2ODc1IC0xLjQzNzUgQyA1Mi4xMTMyODEgMC44MDA3ODEgNDYuODUxNTYyIDEuOTIxODc1IDQxLjE4NzUgMS45MjE4NzUgWiBNIDQxLjE4NzUgMS45MjE4NzUgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5MTYuMTAyNDM1LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi43MzQzNzUgMS45MjE4NzUgQyA0My44NTkzNzUgMS45MjE4NzUgMzYuMTA5Mzc1IDAuMTA5Mzc1IDI5LjQ4NDM3NSAtMy41MTU2MjUgQyAyMi44NTkzNzUgLTcuMTQ4NDM4IDE3LjcyNjU2MiAtMTIuMzMyMDMxIDE0LjA5Mzc1IC0xOS4wNjI1IEMgMTAuNDY4NzUgLTI1LjgwMDc4MSA4LjY1NjI1IC0zMy42NjAxNTYgOC42NTYyNSAtNDIuNjQwNjI1IEwgOC42NTYyNSAtMTE3IEwgMzMuNSAtMTE3IEwgMzMuNSAtNzMuMjUgTCAzMy45ODQzNzUgLTczLjI1IEMgMzUuNTg1OTM4IC03NS40ODgyODEgMzcuNTg1OTM4IC03Ny40Mzc1IDM5Ljk4NDM3NSAtNzkuMDkzNzUgQyA0Mi4zOTA2MjUgLTgwLjc1IDQ1LjA2MjUgLTgyLjAwMzkwNiA0OCAtODIuODU5Mzc1IEMgNTAuOTM3NSAtODMuNzEwOTM4IDU0LjA2MjUgLTg0LjE0MDYyNSA1Ny4zNzUgLTg0LjE0MDYyNSBDIDY1LjE3NTc4MSAtODQuMTQwNjI1IDcyLjAxNTYyNSAtODIuMzc1IDc3Ljg5MDYyNSAtNzguODQzNzUgQyA4My43NzM0MzggLTc1LjMyMDMxMiA4OC4zOTg0MzggLTcwLjQ2MDkzOCA5MS43NjU2MjUgLTY0LjI2NTYyNSBDIDk1LjEyODkwNiAtNTguMDY2NDA2IDk2LjgxMjUgLTUwLjgwMDc4MSA5Ni44MTI1IC00Mi40Njg3NSBDIDk2LjgxMjUgLTM2LjA2MjUgOTUuNzk2ODc1IC0zMC4xMzI4MTIgOTMuNzY1NjI1IC0yNC42ODc1IEMgOTEuNzM0Mzc1IC0xOS4yMzgyODEgODguODIwMzEyIC0xNC41MDc4MTIgODUuMDMxMjUgLTEwLjUgQyA4MS4yMzgyODEgLTYuNDg4MjgxIDc2LjY0NDUzMSAtMy40MTQwNjIgNzEuMjUgLTEuMjgxMjUgQyA2NS44NTE1NjIgMC44NTE1NjIgNTkuNjc5Njg4IDEuOTIxODc1IDUyLjczNDM3NSAxLjkyMTg3NSBaIE0gNTIuNzM0Mzc1IC0xOS41NDY4NzUgQyA1Ni41NzgxMjUgLTE5LjU0Njg3NSA1OS44OTA2MjUgLTIwLjQ4NDM3NSA2Mi42NzE4NzUgLTIyLjM1OTM3NSBDIDY1LjQ1MzEyNSAtMjQuMjM0Mzc1IDY3LjYxMzI4MSAtMjYuNzk2ODc1IDY5LjE1NjI1IC0zMC4wNDY4NzUgQyA3MC43MDcwMzEgLTMzLjMwNDY4OCA3MS40ODQzNzUgLTM2Ljk2ODc1IDcxLjQ4NDM3NSAtNDEuMDMxMjUgQyA3MS40ODQzNzUgLTQ1LjA5Mzc1IDcwLjcwNzAzMSAtNDguNzIyNjU2IDY5LjE1NjI1IC01MS45MjE4NzUgQyA2Ny42MTMyODEgLTU1LjEyODkwNiA2NS40NTMxMjUgLTU3LjY2NDA2MiA2Mi42NzE4NzUgLTU5LjUzMTI1IEMgNTkuODkwNjI1IC02MS40MDYyNSA1Ni41NzgxMjUgLTYyLjM0Mzc1IDUyLjczNDM3NSAtNjIuMzQzNzUgQyA0OC44OTA2MjUgLTYyLjM0Mzc1IDQ1LjU1MDc4MSAtNjEuNDA2MjUgNDIuNzE4NzUgLTU5LjUzMTI1IEMgMzkuODgyODEyIC01Ny42NjQwNjIgMzcuNzE4NzUgLTU1LjEyODkwNiAzNi4yMTg3NSAtNTEuOTIxODc1IEMgMzQuNzI2NTYyIC00OC43MjI2NTYgMzMuOTg0Mzc1IC00NS4wOTM3NSAzMy45ODQzNzUgLTQxLjAzMTI1IEMgMzMuOTg0Mzc1IC0zNi45Njg3NSAzNC43MjY1NjIgLTMzLjMwNDY4OCAzNi4yMTg3NSAtMzAuMDQ2ODc1IEMgMzcuNzE4NzUgLTI2Ljc5Njg3NSAzOS44ODI4MTIgLTI0LjIzNDM3NSA0Mi43MTg3NSAtMjIuMzU5Mzc1IEMgNDUuNTUwNzgxIC0yMC40ODQzNzUgNDguODkwNjI1IC0xOS41NDY4NzUgNTIuNzM0Mzc1IC0xOS41NDY4NzUgWiBNIDUyLjczNDM3NSAtMTkuNTQ2ODc1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTAxOC4zNTE5MDgsIDgwNS4xMjQ5MTEpIj48Zz48cGF0aCBkPSJNIDkuMjk2ODc1IDAgTCA5LjI5Njg3NSAtMTE3IEwgMzQuMTQwNjI1IC0xMTcgTCAzNC4xNDA2MjUgMCBaIE0gOS4yOTY4NzUgMCAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwNjEuNjIzNTcyLCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi4yNSAwIEMgNDIuOTU3MDMxIDAgMzQuNzg1MTU2IC0xLjczNDM3NSAyNy43MzQzNzUgLTUuMjAzMTI1IEMgMjAuNjc5Njg4IC04LjY3OTY4OCAxNS4yMDMxMjUgLTEzLjQ4ODI4MSAxMS4yOTY4NzUgLTE5LjYyNSBDIDcuMzk4NDM4IC0yNS43Njk1MzEgNS40NTMxMjUgLTMyLjkwNjI1IDUuNDUzMTI1IC00MS4wMzEyNSBDIDUuNDUzMTI1IC01MC4wMDc4MTIgNy4zMjAzMTIgLTU3LjcwMzEyNSAxMS4wNjI1IC02NC4xMDkzNzUgQyAxNC44MDA3ODEgLTcwLjUyMzQzOCAxOS43OTY4NzUgLTc1LjQ2ODc1IDI2LjA0Njg3NSAtNzguOTM3NSBDIDMyLjI5Njg3NSAtODIuNDA2MjUgMzkuMjEwOTM4IC04NC4xNDA2MjUgNDYuNzk2ODc1IC04NC4xNDA2MjUgQyA1NS40NTMxMjUgLTg0LjE0MDYyNSA2Mi42OTE0MDYgLTgyLjMyMDMxMiA2OC41MTU2MjUgLTc4LjY4NzUgQyA3NC4zMzU5MzggLTc1LjA2MjUgNzguNzQyMTg4IC03MC4xMjUgODEuNzM0Mzc1IC02My44NzUgQyA4NC43MzQzNzUgLTU3LjYyNSA4Ni4yMzQzNzUgLTUwLjQ4ODI4MSA4Ni4yMzQzNzUgLTQyLjQ2ODc1IEMgODYuMjM0Mzc1IC00MS4wODIwMzEgODYuMTQ4NDM4IC0zOS40NTMxMjUgODUuOTg0Mzc1IC0zNy41NzgxMjUgQyA4NS44MjgxMjUgLTM1LjcxMDkzOCA4NS42NDQ1MzEgLTM0LjI0MjE4OCA4NS40Mzc1IC0zMy4xNzE4NzUgTCAzMS41NzgxMjUgLTMzLjE3MTg3NSBDIDMyLjIxMDkzOCAtMzAuMzk4NDM4IDMzLjQzNzUgLTI4LjA1MDc4MSAzNS4yNSAtMjYuMTI1IEMgMzcuMDcwMzEyIC0yNC4xOTUzMTIgMzkuMzc1IC0yMi43ODEyNSA0Mi4xNTYyNSAtMjEuODc1IEMgNDQuOTM3NSAtMjAuOTY4NzUgNDguMDM1MTU2IC0yMC41MTU2MjUgNTEuNDUzMTI1IC0yMC41MTU2MjUgTCA3Ni42MDkzNzUgLTIwLjUxNTYyNSBMIDc2LjYwOTM3NSAwIFogTSAzMC45Mzc1IC00OC43MTg3NSBMIDYyLjE4NzUgLTQ4LjcxODc1IEMgNjEuOTc2NTYyIC01MC40Mzc1IDYxLjY2MDE1NiAtNTIuMDkzNzUgNjEuMjM0Mzc1IC01My42ODc1IEMgNjAuODA0Njg4IC01NS4yODkwNjIgNjAuMTMyODEyIC01Ni43MDcwMzEgNTkuMjE4NzUgLTU3LjkzNzUgQyA1OC4zMTI1IC01OS4xNjQwNjIgNTcuMjY5NTMxIC02MC4yMzQzNzUgNTYuMDkzNzUgLTYxLjE0MDYyNSBDIDU0LjkxNDA2MiAtNjIuMDU0Njg4IDUzLjU1MDc4MSAtNjIuNzgxMjUgNTIgLTYzLjMxMjUgQyA1MC40NTcwMzEgLTYzLjg0Mzc1IDQ4LjcyMjY1NiAtNjQuMTA5Mzc1IDQ2Ljc5Njg3NSAtNjQuMTA5Mzc1IEMgNDQuMzM1OTM4IC02NC4xMDkzNzUgNDIuMTQ0NTMxIC02My42Nzk2ODggNDAuMjE4NzUgLTYyLjgyODEyNSBDIDM4LjMwMDc4MSAtNjEuOTcyNjU2IDM2LjcwMzEyNSAtNjAuODIwMzEyIDM1LjQyMTg3NSAtNTkuMzc1IEMgMzQuMTQwNjI1IC01Ny45Mzc1IDMzLjE0ODQzOCAtNTYuMjgxMjUgMzIuNDUzMTI1IC01NC40MDYyNSBDIDMxLjc2NTYyNSAtNTIuNTM5MDYyIDMxLjI1NzgxMiAtNTAuNjQ0NTMxIDMwLjkzNzUgLTQ4LjcxODc1IFogTSAzMC45Mzc1IC00OC43MTg3NSAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExNTIuOTc4NDQ5LCA4MDUuMTI0OTExKSI+PGcvPjwvZz48L2c+PC9zdmc+" alt="Palpawble" style="height:24px;width:auto;display:block"/>
+      </div>
+
+      <!-- single tab, no switcher needed -->
+
+      <!-- Login form -->
+      <div id="form-login">
+        <div class="modal-title">Bon retour.</div>
+        <div class="modal-sub">Vos animaux vous attendent. Connectez-vous pour continuer.</div>
+        <div class="modal-field">
+          <label class="modal-label">Courriel</label>
+          <input class="modal-input" type="email" placeholder="vous@exemple.com"/>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Mot de passe</label>
+          <input class="modal-input" type="password" placeholder="••••••••"/>
+        </div>
+        <button class="modal-forgot">Mot de passe oublié?</button>
+        <button class="btn btn-modal-submit" onclick="enterApp()">Se connecter à Palpawble</button>
+        <div class="modal-or">ou</div>
+        <button class="btn btn-modal-social"><span>🇨🇦</span> Continuer avec Google</button>
+        <div class="modal-note" style="color:var(--on-surf-v);font-size:12px">L'accès est actuellement sur invitation seulement. <a href="mailto:hello@palpawble.ca" style="color:var(--primary);font-weight:600">Demander l'accès →</a></div>
+      </div>
+
+      <!-- Signup form -->
+      <div id="form-signup" style="display:none;visibility:hidden">
+        <div class="modal-title">Commencez gratuitement.</div>
+        <div class="modal-sub">Rejoignez des milliers de propriétaires d'animaux qui trouvent la sérénité à chaque crise.</div>
+        <div class="modal-field">
+          <label class="modal-label">Nom complet</label>
+          <input class="modal-input" type="text" placeholder="Sarah Chen"/>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Courriel</label>
+          <input class="modal-input" type="email" placeholder="vous@exemple.com"/>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Mot de passe</label>
+          <input class="modal-input" type="password" placeholder="Créez un mot de passe"/>
+        </div>
+        <button class="btn btn-modal-submit" style="margin-top:4px" onclick="enterApp()">Créer un compte gratuit</button>
+        <div class="modal-or">ou</div>
+        <button class="btn btn-modal-social"><span>🇨🇦</span> Continuer avec Google</button>
+        <div class="modal-note">En vous inscrivant, vous acceptez nos <a href="#">Conditions</a> et notre <a href="#">Politique de confidentialité</a>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard removed for public distribution -->
+
+<script>
+/* ── Modal ── */
+function openModal(tab) {
+  document.getElementById('modal-overlay').classList.add('open');
+  switchTab(tab);
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function switchTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+  document.getElementById('form-login').style.display  = tab==='login'  ? '' : 'none';
+  document.getElementById('form-signup').style.display = tab==='signup' ? '' : 'none';
+}
+
+/* ── App nav: not used in public version (no dashboard) ── */
+
+/* ── Smooth scroll for anchor links ── */
+document.querySelectorAll('.lp-nav-link[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+/* ── Intersection observer: fade in on scroll ── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity=1; e.target.style.transform='none'; } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.feature-card, .how-step, .testimonial-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     /TRY-LIVE-DEMO PAGE
+     Full page — gated video, pre-filter, conditional forms
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div id="demo-page">
+
+  <!-- Nav -->
+  <nav class="demo-page-nav">
+    <div class="demo-page-logo" onclick="showDemoPage(false)">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjI5MCA2ODAgOTYwIDE0NSIgdmVyc2lvbj0iMS4wIj4KPGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMDQuNTI5MzAzLCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA5Ljc4MTI1IDAgTCA5Ljc4MTI1IC0xMTIuMjAzMTI1IEwgNTguMDE1NjI1IC0xMTIuMjAzMTI1IEMgNjUuNDkyMTg4IC0xMTIuMjAzMTI1IDcyLjM1OTM3NSAtMTEwLjQ4ODI4MSA3OC42MDkzNzUgLTEwNy4wNjI1IEMgODQuODY3MTg4IC0xMDMuNjQ0NTMxIDg5Ljg2NzE4OCAtOTguOTE0MDYyIDkzLjYwOTM3NSAtOTIuODc1IEMgOTcuMzQ3NjU2IC04Ni44NDM3NSA5OS4yMTg3NSAtNzkuODc1IDk5LjIxODc1IC03MS45Njg3NSBDIDk5LjIxODc1IC02NC4wNjI1IDk3LjM0NzY1NiAtNTcuMDM1MTU2IDkzLjYwOTM3NSAtNTAuODkwNjI1IEMgODkuODY3MTg4IC00NC43NDIxODggODQuODk4NDM4IC0zOS45NjA5MzggNzguNzAzMTI1IC0zNi41NDY4NzUgQyA3Mi41MDM5MDYgLTMzLjEyODkwNiA2NS42MDkzNzUgLTMxLjQyMTg3NSA1OC4wMTU2MjUgLTMxLjQyMTg3NSBMIDM2LjcwMzEyNSAtMzEuNDIxODc1IEwgMzYuNzAzMTI1IDAgWiBNIDM2LjcwMzEyNSAtNTQuMDE1NjI1IEwgNTQuOTY4NzUgLTU0LjAxNTYyNSBDIDU4LjE3NTc4MSAtNTQuMDE1NjI1IDYxLjA2MjUgLTU0LjcwNzAzMSA2My42MjUgLTU2LjA5Mzc1IEMgNjYuMTk1MzEyIC01Ny40ODgyODEgNjguMjgxMjUgLTU5LjUxOTUzMSA2OS44NzUgLTYyLjE4NzUgQyA3MS40NzY1NjIgLTY0Ljg2MzI4MSA3Mi4yODEyNSAtNjguMDcwMzEyIDcyLjI4MTI1IC03MS44MTI1IEMgNzIuMjgxMjUgLTc1LjU1MDc4MSA3MS40NzY1NjIgLTc4Ljc1MzkwNiA2OS44NzUgLTgxLjQyMTg3NSBDIDY4LjI4MTI1IC04NC4wOTc2NTYgNjYuMTcxODc1IC04Ni4xNTYyNSA2My41NDY4NzUgLTg3LjU5Mzc1IEMgNjAuOTI5Njg4IC04OS4wMzEyNSA1OC4wNzAzMTIgLTg5Ljc1IDU0Ljk2ODc1IC04OS43NSBMIDM2LjcwMzEyNSAtODkuNzUgWiBNIDM2LjcwMzEyNSAtNTQuMDE1NjI1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDA0LjUzNDgxOCwgODA1LjEyNDkxMSkiPjxnPjxwYXRoIGQ9Ik0gNDIuMzEyNSAxLjkyMTg3NSBDIDM1LjA1MDc4MSAxLjkyMTg3NSAyOC42NDA2MjUgMC4wNTA3ODEyIDIzLjA3ODEyNSAtMy42ODc1IEMgMTcuNTIzNDM4IC03LjQyNTc4MSAxMy4xOTUzMTIgLTEyLjQ3MjY1NiAxMC4wOTM3NSAtMTguODI4MTI1IEMgNyAtMjUuMTkxNDA2IDUuNDUzMTI1IC0zMi4zNzg5MDYgNS40NTMxMjUgLTQwLjM5MDYyNSBDIDUuNDUzMTI1IC00OC43MjI2NTYgNy4yNjU2MjUgLTU2LjE3NTc4MSAxMC44OTA2MjUgLTYyLjc1IEMgMTQuNTIzNDM4IC02OS4zMjAzMTIgMTkuNjc5Njg4IC03NC41MzEyNSAyNi4zNTkzNzUgLTc4LjM3NSBDIDMzLjA0Njg3NSAtODIuMjE4NzUgNDAuOTI1NzgxIC04NC4xNDA2MjUgNTAgLTg0LjE0MDYyNSBDIDU5LjE5NTMxMiAtODQuMTQwNjI1IDY3LjAyMzQzOCAtODIuMjQyMTg4IDczLjQ4NDM3NSAtNzguNDUzMTI1IEMgNzkuOTUzMTI1IC03NC42NjAxNTYgODQuOTIxODc1IC02OS40NzY1NjIgODguMzkwNjI1IC02Mi45MDYyNSBDIDkxLjg2NzE4OCAtNTYuMzMyMDMxIDkzLjYwOTM3NSAtNDguOTg4MjgxIDkzLjYwOTM3NSAtNDAuODc1IEwgOTMuNjA5Mzc1IDAgTCA2OS4yMzQzNzUgMCBMIDY5LjIzNDM3NSAtMTMuMTQwNjI1IEwgNjguNTkzNzUgLTEzLjE0MDYyNSBDIDY3LjEwMTU2MiAtMTAuMjUzOTA2IDY1LjE3OTY4OCAtNy42NjAxNTYgNjIuODI4MTI1IC01LjM1OTM3NSBDIDYwLjQ3MjY1NiAtMy4wNjY0MDYgNTcuNjEzMjgxIC0xLjI4MTI1IDU0LjI1IDAgQyA1MC44ODI4MTIgMS4yODEyNSA0Ni45MDYyNSAxLjkyMTg3NSA0Mi4zMTI1IDEuOTIxODc1IFogTSA0OS42ODc1IC0xOS41NDY4NzUgQyA1My40MjU3ODEgLTE5LjU0Njg3NSA1Ni43MTA5MzggLTIwLjQ4NDM3NSA1OS41NDY4NzUgLTIyLjM1OTM3NSBDIDYyLjM3ODkwNiAtMjQuMjM0Mzc1IDY0LjUzOTA2MiAtMjYuODI4MTI1IDY2LjAzMTI1IC0zMC4xNDA2MjUgQyA2Ny41MzEyNSAtMzMuNDUzMTI1IDY4LjI4MTI1IC0zNy4xMzI4MTIgNjguMjgxMjUgLTQxLjE4NzUgQyA2OC4yODEyNSAtNDUuMTQ0NTMxIDY3LjUzMTI1IC00OC43MjI2NTYgNjYuMDMxMjUgLTUxLjkyMTg3NSBDIDY0LjUzOTA2MiAtNTUuMTI4OTA2IDYyLjM3ODkwNiAtNTcuNjY0MDYyIDU5LjU0Njg3NSAtNTkuNTMxMjUgQyA1Ni43MTA5MzggLTYxLjQwNjI1IDUzLjQyNTc4MSAtNjIuMzQzNzUgNDkuNjg3NSAtNjIuMzQzNzUgQyA0NS44NDM3NSAtNjIuMzQzNzUgNDIuNDc2NTYyIC02MS40MDYyNSAzOS41OTM3NSAtNTkuNTMxMjUgQyAzNi43MDcwMzEgLTU3LjY2NDA2MiAzNC41MTU2MjUgLTU1LjEyODkwNiAzMy4wMTU2MjUgLTUxLjkyMTg3NSBDIDMxLjUyMzQzOCAtNDguNzIyNjU2IDMwLjc4MTI1IC00NS4xNDQ1MzEgMzAuNzgxMjUgLTQxLjE4NzUgQyAzMC43ODEyNSAtMzcuMTMyODEyIDMxLjUyMzQzOCAtMzMuNDUzMTI1IDMzLjAxNTYyNSAtMzAuMTQwNjI1IEMgMzQuNTE1NjI1IC0yNi44MjgxMjUgMzYuNzA3MDMxIC0yNC4yMzQzNzUgMzkuNTkzNzUgLTIyLjM1OTM3NSBDIDQyLjQ3NjU2MiAtMjAuNDg0Mzc1IDQ1Ljg0Mzc1IC0xOS41NDY4NzUgNDkuNjg3NSAtMTkuNTQ2ODc1IFogTSA0OS42ODc1IC0xOS41NDY4NzUgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MDcuMjY1MDM0LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA5LjI5Njg3NSAwIEwgOS4yOTY4NzUgLTExNyBMIDM0LjE0MDYyNSAtMTE3IEwgMzQuMTQwNjI1IDAgWiBNIDkuMjk2ODc1IDAgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1NTAuNTM2NzQ0LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi43MzQzNzUgLTg0LjE0MDYyNSBDIDU5LjY3OTY4OCAtODQuMTQwNjI1IDY1Ljg1MTU2MiAtODMuMDQ2ODc1IDcxLjI1IC04MC44NTkzNzUgQyA3Ni42NDQ1MzEgLTc4LjY3MTg3NSA4MS4yMzgyODEgLTc1LjU3MDMxMiA4NS4wMzEyNSAtNzEuNTYyNSBDIDg4LjgyMDMxMiAtNjcuNTYyNSA5MS43MzQzNzUgLTYyLjg1OTM3NSA5My43NjU2MjUgLTU3LjQ1MzEyNSBDIDk1Ljc5Njg3NSAtNTIuMDU0Njg4IDk2LjgxMjUgLTQ2LjEwMTU2MiA5Ni44MTI1IC0zOS41OTM3NSBDIDk2LjgxMjUgLTMxLjQ2ODc1IDk1LjEyODkwNiAtMjQuMjgxMjUgOTEuNzY1NjI1IC0xOC4wMzEyNSBDIDg4LjM5ODQzOCAtMTEuNzgxMjUgODMuNzczNDM4IC02Ljg5MDYyNSA3Ny44OTA2MjUgLTMuMzU5Mzc1IEMgNzIuMDE1NjI1IDAuMTYwMTU2IDY1LjE3NTc4MSAxLjkyMTg3NSA1Ny4zNzUgMS45MjE4NzUgQyA1NC4wNjI1IDEuOTIxODc1IDUwLjkzNzUgMS40OTIxODggNDggMC42NDA2MjUgQyA0NS4wNjI1IC0wLjIxMDkzOCA0Mi4zOTA2MjUgLTEuNDQxNDA2IDM5Ljk4NDM3NSAtMy4wNDY4NzUgQyAzNy41ODU5MzggLTQuNjQ4NDM4IDM1LjU4NTkzOCAtNi42MjUgMzMuOTg0Mzc1IC04Ljk2ODc1IEwgMzMuNSAtOC45Njg3NSBMIDMzLjUgMzQuNzgxMjUgTCA4LjY1NjI1IDM0Ljc4MTI1IEwgOC42NTYyNSAtMzkuNTkzNzUgQyA4LjY1NjI1IC00OC42NzU3ODEgMTAuNDY4NzUgLTU2LjUzMTI1IDE0LjA5Mzc1IC02My4xNTYyNSBDIDE3LjcyNjU2MiAtNjkuNzgxMjUgMjIuODU5Mzc1IC03NC45Mjk2ODggMjkuNDg0Mzc1IC03OC42MDkzNzUgQyAzNi4xMDkzNzUgLTgyLjI5Njg3NSA0My44NTkzNzUgLTg0LjE0MDYyNSA1Mi43MzQzNzUgLTg0LjE0MDYyNSBaIE0gNTIuNzM0Mzc1IC02Mi42NzE4NzUgQyA0OC44OTA2MjUgLTYyLjY3MTg3NSA0NS41NTA3ODEgLTYxLjczNDM3NSA0Mi43MTg3NSAtNTkuODU5Mzc1IEMgMzkuODgyODEyIC01Ny45OTIxODggMzcuNzE4NzUgLTU1LjQyOTY4OCAzNi4yMTg3NSAtNTIuMTcxODc1IEMgMzQuNzI2NTYyIC00OC45MTAxNTYgMzMuOTg0Mzc1IC00NS4yNSAzMy45ODQzNzUgLTQxLjE4NzUgQyAzMy45ODQzNzUgLTM3LjEzMjgxMiAzNC43MjY1NjIgLTMzLjUwMzkwNiAzNi4yMTg3NSAtMzAuMjk2ODc1IEMgMzcuNzE4NzUgLTI3LjA4NTkzOCAzOS44ODI4MTIgLTI0LjU0Njg3NSA0Mi43MTg3NSAtMjIuNjcxODc1IEMgNDUuNTUwNzgxIC0yMC44MDQ2ODggNDguODkwNjI1IC0xOS44NzUgNTIuNzM0Mzc1IC0xOS44NzUgQyA1Ni41NzgxMjUgLTE5Ljg3NSA1OS44OTA2MjUgLTIwLjgwNDY4OCA2Mi42NzE4NzUgLTIyLjY3MTg3NSBDIDY1LjQ1MzEyNSAtMjQuNTQ2ODc1IDY3LjYxMzI4MSAtMjcuMDg1OTM4IDY5LjE1NjI1IC0zMC4yOTY4NzUgQyA3MC43MDcwMzEgLTMzLjUwMzkwNiA3MS40ODQzNzUgLTM3LjEzMjgxMiA3MS40ODQzNzUgLTQxLjE4NzUgQyA3MS40ODQzNzUgLTQ1LjI1IDcwLjcwNzAzMSAtNDguOTEwMTU2IDY5LjE1NjI1IC01Mi4xNzE4NzUgQyA2Ny42MTMyODEgLTU1LjQyOTY4OCA2NS40NTMxMjUgLTU3Ljk5MjE4OCA2Mi42NzE4NzUgLTU5Ljg1OTM3NSBDIDU5Ljg5MDYyNSAtNjEuNzM0Mzc1IDU2LjU3ODEyNSAtNjIuNjcxODc1IDUyLjczNDM3NSAtNjIuNjcxODc1IFogTSA1Mi43MzQzNzUgLTYyLjY3MTg3NSAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDY1Mi43ODYxNzEsIDgwNS4xMjQ5MTEpIj48Zz48cGF0aCBkPSJNIDQyLjMxMjUgMS45MjE4NzUgQyAzNS4wNTA3ODEgMS45MjE4NzUgMjguNjQwNjI1IDAuMDUwNzgxMiAyMy4wNzgxMjUgLTMuNjg3NSBDIDE3LjUyMzQzOCAtNy40MjU3ODEgMTMuMTk1MzEyIC0xMi40NzI2NTYgMTAuMDkzNzUgLTE4LjgyODEyNSBDIDcgLTI1LjE5MTQwNiA1LjQ1MzEyNSAtMzIuMzc4OTA2IDUuNDUzMTI1IC00MC4zOTA2MjUgQyA1LjQ1MzEyNSAtNDguNzIyNjU2IDcuMjY1NjI1IC01Ni4xNzU3ODEgMTAuODkwNjI1IC02Mi43NSBDIDE0LjUyMzQzOCAtNjkuMzIwMzEyIDE5LjY3OTY4OCAtNzQuNTMxMjUgMjYuMzU5Mzc1IC03OC4zNzUgQyAzMy4wNDY4NzUgLTgyLjIxODc1IDQwLjkyNTc4MSAtODQuMTQwNjI1IDUwIC04NC4xNDA2MjUgQyA1OS4xOTUzMTIgLTg0LjE0MDYyNSA2Ny4wMjM0MzggLTgyLjI0MjE4OCA3My40ODQzNzUgLTc4LjQ1MzEyNSBDIDc5Ljk1MzEyNSAtNzQuNjYwMTU2IDg0LjkyMTg3NSAtNjkuNDc2NTYyIDg4LjM5MDYyNSAtNjIuOTA2MjUgQyA5MS44NjcxODggLTU2LjMzMjAzMSA5My42MDkzNzUgLTQ4Ljk4ODI4MSA5My42MDkzNzUgLTQwLjg3NSBMIDkzLjYwOTM3NSAwIEwgNjkuMjM0Mzc1IDAgTCA2OS4yMzQzNzUgLTEzLjE0MDYyNSBMIDY4LjU5Mzc1IC0xMy4xNDA2MjUgQyA2Ny4xMDE1NjIgLTEwLjI1MzkwNiA2NS4xNzk2ODggLTcuNjYwMTU2IDYyLjgyODEyNSAtNS4zNTkzNzUgQyA2MC40NzI2NTYgLTMuMDY2NDA2IDU3LjYxMzI4MSAtMS4yODEyNSA1NC4yNSAwIEMgNTAuODgyODEyIDEuMjgxMjUgNDYuOTA2MjUgMS45MjE4NzUgNDIuMzEyNSAxLjkyMTg3NSBaIE0gNDkuNjg3NSAtMTkuNTQ2ODc1IEMgNTMuNDI1NzgxIC0xOS41NDY4NzUgNTYuNzEwOTM4IC0yMC40ODQzNzUgNTkuNTQ2ODc1IC0yMi4zNTkzNzUgQyA2Mi4zNzg5MDYgLTI0LjIzNDM3NSA2NC41MzkwNjIgLTI2LjgyODEyNSA2Ni4wMzEyNSAtMzAuMTQwNjI1IEMgNjcuNTMxMjUgLTMzLjQ1MzEyNSA2OC4yODEyNSAtMzcuMTMyODEyIDY4LjI4MTI1IC00MS4xODc1IEMgNjguMjgxMjUgLTQ1LjE0NDUzMSA2Ny41MzEyNSAtNDguNzIyNjU2IDY2LjAzMTI1IC01MS45MjE4NzUgQyA2NC41MzkwNjIgLTU1LjEyODkwNiA2Mi4zNzg5MDYgLTU3LjY2NDA2MiA1OS41NDY4NzUgLTU5LjUzMTI1IEMgNTYuNzEwOTM4IC02MS40MDYyNSA1My40MjU3ODEgLTYyLjM0Mzc1IDQ5LjY4NzUgLTYyLjM0Mzc1IEMgNDUuODQzNzUgLTYyLjM0Mzc1IDQyLjQ3NjU2MiAtNjEuNDA2MjUgMzkuNTkzNzUgLTU5LjUzMTI1IEMgMzYuNzA3MDMxIC01Ny42NjQwNjIgMzQuNTE1NjI1IC01NS4xMjg5MDYgMzMuMDE1NjI1IC01MS45MjE4NzUgQyAzMS41MjM0MzggLTQ4LjcyMjY1NiAzMC43ODEyNSAtNDUuMTQ0NTMxIDMwLjc4MTI1IC00MS4xODc1IEMgMzAuNzgxMjUgLTM3LjEzMjgxMiAzMS41MjM0MzggLTMzLjQ1MzEyNSAzMy4wMTU2MjUgLTMwLjE0MDYyNSBDIDM0LjUxNTYyNSAtMjYuODI4MTI1IDM2LjcwNzAzMSAtMjQuMjM0Mzc1IDM5LjU5Mzc1IC0yMi4zNTkzNzUgQyA0Mi40NzY1NjIgLTIwLjQ4NDM3NSA0NS44NDM3NSAtMTkuNTQ2ODc1IDQ5LjY4NzUgLTE5LjU0Njg3NSBaIE0gNDkuNjg3NSAtMTkuNTQ2ODc1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNzU1LjUxNjM4NywgODA1LjEyNDkxMSkiPjxnPjxwYXRoIGQ9Ik0gNDEuMTg3NSAxLjkyMTg3NSBDIDM1LjUzMTI1IDEuOTIxODc1IDMwLjI2OTUzMSAwLjgwMDc4MSAyNS40MDYyNSAtMS40Mzc1IEMgMjAuNTM5MDYyIC0zLjY4NzUgMTYuNjQwNjI1IC03LjEwOTM3NSAxMy43MDMxMjUgLTExLjcwMzEyNSBDIDEwLjc2NTYyNSAtMTYuMjk2ODc1IDkuMjk2ODc1IC0yMi4wNjY0MDYgOS4yOTY4NzUgLTI5LjAxNTYyNSBMIDkuMjk2ODc1IC04Mi4yMTg3NSBMIDM0LjE0MDYyNSAtODIuMjE4NzUgTCAzNC4xNDA2MjUgLTI1LjgxMjUgQyAzNC4xNDA2MjUgLTI0LjUxOTUzMSAzNC40NTcwMzEgLTIzLjMzNTkzOCAzNS4wOTM3NSAtMjIuMjY1NjI1IEMgMzUuNzM4MjgxIC0yMS4yMDMxMjUgMzYuNTkzNzUgLTIwLjM0NzY1NiAzNy42NTYyNSAtMTkuNzAzMTI1IEMgMzguNzI2NTYyIC0xOS4wNjY0MDYgMzkuOTA2MjUgLTE4Ljc1IDQxLjE4NzUgLTE4Ljc1IEMgNDIuNDY4NzUgLTE4Ljc1IDQzLjY0NDUzMSAtMTkuMDY2NDA2IDQ0LjcxODc1IC0xOS43MDMxMjUgQyA0NS43ODkwNjIgLTIwLjM0NzY1NiA0Ni42NDQ1MzEgLTIxLjIwMzEyNSA0Ny4yODEyNSAtMjIuMjY1NjI1IEMgNDcuOTI1NzgxIC0yMy4zMzU5MzggNDguMjUgLTI0LjUxOTUzMSA0OC4yNSAtMjUuODEyNSBMIDQ4LjI1IC01My4yMTg3NSBDIDQ4LjI1IC01OS44NDM3NSA0OS42MzI4MTIgLTY1LjQ1MzEyNSA1Mi40MDYyNSAtNzAuMDQ2ODc1IEMgNTUuMTg3NSAtNzQuNjQwNjI1IDU5LjAwNzgxMiAtNzguMTMyODEyIDYzLjg3NSAtODAuNTMxMjUgQyA2OC43MzgyODEgLTgyLjkzNzUgNzQuMjEwOTM4IC04NC4xNDA2MjUgODAuMjk2ODc1IC04NC4xNDA2MjUgQyA4Ni4zOTA2MjUgLTg0LjE0MDYyNSA5MS44MzU5MzggLTgyLjkzNzUgOTYuNjQwNjI1IC04MC41MzEyNSBDIDEwMS40NTMxMjUgLTc4LjEzMjgxMiAxMDUuMjUgLTc0LjY0MDYyNSAxMDguMDMxMjUgLTcwLjA0Njg3NSBDIDExMC44MTI1IC02NS40NTMxMjUgMTEyLjIwMzEyNSAtNTkuODQzNzUgMTEyLjIwMzEyNSAtNTMuMjE4NzUgTCAxMTIuMjAzMTI1IC0yNS44MTI1IEMgMTEyLjIwMzEyNSAtMjQuNTE5NTMxIDExMi41MTk1MzEgLTIzLjMzNTkzOCAxMTMuMTU2MjUgLTIyLjI2NTYyNSBDIDExMy44MDA3ODEgLTIxLjIwMzEyNSAxMTQuNjc5Njg4IC0yMC4zNDc2NTYgMTE1Ljc5Njg3NSAtMTkuNzAzMTI1IEMgMTE2LjkyMTg3NSAtMTkuMDY2NDA2IDExOC4xMjUgLTE4Ljc1IDExOS40MDYyNSAtMTguNzUgQyAxMjAuNjg3NSAtMTguNzUgMTIxLjg1OTM3NSAtMTkuMDY2NDA2IDEyMi45MjE4NzUgLTE5LjcwMzEyNSBDIDEyMy45OTIxODggLTIwLjM0NzY1NiAxMjQuODUxNTYyIC0yMS4yMDMxMjUgMTI1LjUgLTIyLjI2NTYyNSBDIDEyNi4xNDQ1MzEgLTIzLjMzNTkzOCAxMjYuNDY4NzUgLTI0LjUxOTUzMSAxMjYuNDY4NzUgLTI1LjgxMjUgTCAxMjYuNDY4NzUgLTgyLjIxODc1IEwgMTUxLjMxMjUgLTgyLjIxODc1IEwgMTUxLjMxMjUgLTI5LjAxNTYyNSBDIDE1MS4zMTI1IC0yMi4wNjY0MDYgMTQ5LjgzNTkzOCAtMTYuMjk2ODc1IDE0Ni44OTA2MjUgLTExLjcwMzEyNSBDIDE0My45NTMxMjUgLTcuMTA5Mzc1IDE0MC4wNTA3ODEgLTMuNjg3NSAxMzUuMTg3NSAtMS40Mzc1IEMgMTMwLjMzMjAzMSAwLjgwMDc4MSAxMjUuMDcwMzEyIDEuOTIxODc1IDExOS40MDYyNSAxLjkyMTg3NSBDIDExMy43NSAxLjkyMTg3NSAxMDguNDg4MjgxIDAuODAwNzgxIDEwMy42MjUgLTEuNDM3NSBDIDk4Ljc1NzgxMiAtMy42ODc1IDk0LjgzMjAzMSAtNy4xMDkzNzUgOTEuODQzNzUgLTExLjcwMzEyNSBDIDg4Ljg1MTU2MiAtMTYuMjk2ODc1IDg3LjM1OTM3NSAtMjIuMDY2NDA2IDg3LjM1OTM3NSAtMjkuMDE1NjI1IEwgODcuMzU5Mzc1IC01Ni4yNjU2MjUgQyA4Ny4zNTkzNzUgLTU3LjY0ODQzOCA4Ny4wMzUxNTYgLTU4Ljg3NSA4Ni4zOTA2MjUgLTU5LjkzNzUgQyA4NS43NTM5MDYgLTYxLjAwNzgxMiA4NC44OTg0MzggLTYxLjg2MzI4MSA4My44MjgxMjUgLTYyLjUgQyA4Mi43NTM5MDYgLTYzLjE0NDUzMSA4MS41NzgxMjUgLTYzLjQ2ODc1IDgwLjI5Njg3NSAtNjMuNDY4NzUgQyA3OS4wMTU2MjUgLTYzLjQ2ODc1IDc3LjgxMjUgLTYzLjE0NDUzMSA3Ni42ODc1IC02Mi41IEMgNzUuNTcwMzEyIC02MS44NjMyODEgNzQuNjkxNDA2IC02MS4wMDc4MTIgNzQuMDQ2ODc1IC01OS45Mzc1IEMgNzMuNDEwMTU2IC01OC44NzUgNzMuMDkzNzUgLTU3LjY0ODQzOCA3My4wOTM3NSAtNTYuMjY1NjI1IEwgNzMuMDkzNzUgLTI5LjAxNTYyNSBDIDczLjA5Mzc1IC0yMi4wNjY0MDYgNzEuNjE3MTg4IC0xNi4yOTY4NzUgNjguNjcxODc1IC0xMS43MDMxMjUgQyA2NS43MzQzNzUgLTcuMTA5Mzc1IDYxLjgzMjAzMSAtMy42ODc1IDU2Ljk2ODc1IC0xLjQzNzUgQyA1Mi4xMTMyODEgMC44MDA3ODEgNDYuODUxNTYyIDEuOTIxODc1IDQxLjE4NzUgMS45MjE4NzUgWiBNIDQxLjE4NzUgMS45MjE4NzUgIi8+PC9nPjwvZz48L2c+PGcgZmlsbD0iIzE2NzE2NCIgZmlsbC1vcGFjaXR5PSIxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg5MTYuMTAyNDM1LCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi43MzQzNzUgMS45MjE4NzUgQyA0My44NTkzNzUgMS45MjE4NzUgMzYuMTA5Mzc1IDAuMTA5Mzc1IDI5LjQ4NDM3NSAtMy41MTU2MjUgQyAyMi44NTkzNzUgLTcuMTQ4NDM4IDE3LjcyNjU2MiAtMTIuMzMyMDMxIDE0LjA5Mzc1IC0xOS4wNjI1IEMgMTAuNDY4NzUgLTI1LjgwMDc4MSA4LjY1NjI1IC0zMy42NjAxNTYgOC42NTYyNSAtNDIuNjQwNjI1IEwgOC42NTYyNSAtMTE3IEwgMzMuNSAtMTE3IEwgMzMuNSAtNzMuMjUgTCAzMy45ODQzNzUgLTczLjI1IEMgMzUuNTg1OTM4IC03NS40ODgyODEgMzcuNTg1OTM4IC03Ny40Mzc1IDM5Ljk4NDM3NSAtNzkuMDkzNzUgQyA0Mi4zOTA2MjUgLTgwLjc1IDQ1LjA2MjUgLTgyLjAwMzkwNiA0OCAtODIuODU5Mzc1IEMgNTAuOTM3NSAtODMuNzEwOTM4IDU0LjA2MjUgLTg0LjE0MDYyNSA1Ny4zNzUgLTg0LjE0MDYyNSBDIDY1LjE3NTc4MSAtODQuMTQwNjI1IDcyLjAxNTYyNSAtODIuMzc1IDc3Ljg5MDYyNSAtNzguODQzNzUgQyA4My43NzM0MzggLTc1LjMyMDMxMiA4OC4zOTg0MzggLTcwLjQ2MDkzOCA5MS43NjU2MjUgLTY0LjI2NTYyNSBDIDk1LjEyODkwNiAtNTguMDY2NDA2IDk2LjgxMjUgLTUwLjgwMDc4MSA5Ni44MTI1IC00Mi40Njg3NSBDIDk2LjgxMjUgLTM2LjA2MjUgOTUuNzk2ODc1IC0zMC4xMzI4MTIgOTMuNzY1NjI1IC0yNC42ODc1IEMgOTEuNzM0Mzc1IC0xOS4yMzgyODEgODguODIwMzEyIC0xNC41MDc4MTIgODUuMDMxMjUgLTEwLjUgQyA4MS4yMzgyODEgLTYuNDg4MjgxIDc2LjY0NDUzMSAtMy40MTQwNjIgNzEuMjUgLTEuMjgxMjUgQyA2NS44NTE1NjIgMC44NTE1NjIgNTkuNjc5Njg4IDEuOTIxODc1IDUyLjczNDM3NSAxLjkyMTg3NSBaIE0gNTIuNzM0Mzc1IC0xOS41NDY4NzUgQyA1Ni41NzgxMjUgLTE5LjU0Njg3NSA1OS44OTA2MjUgLTIwLjQ4NDM3NSA2Mi42NzE4NzUgLTIyLjM1OTM3NSBDIDY1LjQ1MzEyNSAtMjQuMjM0Mzc1IDY3LjYxMzI4MSAtMjYuNzk2ODc1IDY5LjE1NjI1IC0zMC4wNDY4NzUgQyA3MC43MDcwMzEgLTMzLjMwNDY4OCA3MS40ODQzNzUgLTM2Ljk2ODc1IDcxLjQ4NDM3NSAtNDEuMDMxMjUgQyA3MS40ODQzNzUgLTQ1LjA5Mzc1IDcwLjcwNzAzMSAtNDguNzIyNjU2IDY5LjE1NjI1IC01MS45MjE4NzUgQyA2Ny42MTMyODEgLTU1LjEyODkwNiA2NS40NTMxMjUgLTU3LjY2NDA2MiA2Mi42NzE4NzUgLTU5LjUzMTI1IEMgNTkuODkwNjI1IC02MS40MDYyNSA1Ni41NzgxMjUgLTYyLjM0Mzc1IDUyLjczNDM3NSAtNjIuMzQzNzUgQyA0OC44OTA2MjUgLTYyLjM0Mzc1IDQ1LjU1MDc4MSAtNjEuNDA2MjUgNDIuNzE4NzUgLTU5LjUzMTI1IEMgMzkuODgyODEyIC01Ny42NjQwNjIgMzcuNzE4NzUgLTU1LjEyODkwNiAzNi4yMTg3NSAtNTEuOTIxODc1IEMgMzQuNzI2NTYyIC00OC43MjI2NTYgMzMuOTg0Mzc1IC00NS4wOTM3NSAzMy45ODQzNzUgLTQxLjAzMTI1IEMgMzMuOTg0Mzc1IC0zNi45Njg3NSAzNC43MjY1NjIgLTMzLjMwNDY4OCAzNi4yMTg3NSAtMzAuMDQ2ODc1IEMgMzcuNzE4NzUgLTI2Ljc5Njg3NSAzOS44ODI4MTIgLTI0LjIzNDM3NSA0Mi43MTg3NSAtMjIuMzU5Mzc1IEMgNDUuNTUwNzgxIC0yMC40ODQzNzUgNDguODkwNjI1IC0xOS41NDY4NzUgNTIuNzM0Mzc1IC0xOS41NDY4NzUgWiBNIDUyLjczNDM3NSAtMTkuNTQ2ODc1ICIvPjwvZz48L2c+PC9nPjxnIGZpbGw9IiMxNjcxNjQiIGZpbGwtb3BhY2l0eT0iMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTAxOC4zNTE5MDgsIDgwNS4xMjQ5MTEpIj48Zz48cGF0aCBkPSJNIDkuMjk2ODc1IDAgTCA5LjI5Njg3NSAtMTE3IEwgMzQuMTQwNjI1IC0xMTcgTCAzNC4xNDA2MjUgMCBaIE0gOS4yOTY4NzUgMCAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwNjEuNjIzNTcyLCA4MDUuMTI0OTExKSI+PGc+PHBhdGggZD0iTSA1Mi4yNSAwIEMgNDIuOTU3MDMxIDAgMzQuNzg1MTU2IC0xLjczNDM3NSAyNy43MzQzNzUgLTUuMjAzMTI1IEMgMjAuNjc5Njg4IC04LjY3OTY4OCAxNS4yMDMxMjUgLTEzLjQ4ODI4MSAxMS4yOTY4NzUgLTE5LjYyNSBDIDcuMzk4NDM4IC0yNS43Njk1MzEgNS40NTMxMjUgLTMyLjkwNjI1IDUuNDUzMTI1IC00MS4wMzEyNSBDIDUuNDUzMTI1IC01MC4wMDc4MTIgNy4zMjAzMTIgLTU3LjcwMzEyNSAxMS4wNjI1IC02NC4xMDkzNzUgQyAxNC44MDA3ODEgLTcwLjUyMzQzOCAxOS43OTY4NzUgLTc1LjQ2ODc1IDI2LjA0Njg3NSAtNzguOTM3NSBDIDMyLjI5Njg3NSAtODIuNDA2MjUgMzkuMjEwOTM4IC04NC4xNDA2MjUgNDYuNzk2ODc1IC04NC4xNDA2MjUgQyA1NS40NTMxMjUgLTg0LjE0MDYyNSA2Mi42OTE0MDYgLTgyLjMyMDMxMiA2OC41MTU2MjUgLTc4LjY4NzUgQyA3NC4zMzU5MzggLTc1LjA2MjUgNzguNzQyMTg4IC03MC4xMjUgODEuNzM0Mzc1IC02My44NzUgQyA4NC43MzQzNzUgLTU3LjYyNSA4Ni4yMzQzNzUgLTUwLjQ4ODI4MSA4Ni4yMzQzNzUgLTQyLjQ2ODc1IEMgODYuMjM0Mzc1IC00MS4wODIwMzEgODYuMTQ4NDM4IC0zOS40NTMxMjUgODUuOTg0Mzc1IC0zNy41NzgxMjUgQyA4NS44MjgxMjUgLTM1LjcxMDkzOCA4NS42NDQ1MzEgLTM0LjI0MjE4OCA4NS40Mzc1IC0zMy4xNzE4NzUgTCAzMS41NzgxMjUgLTMzLjE3MTg3NSBDIDMyLjIxMDkzOCAtMzAuMzk4NDM4IDMzLjQzNzUgLTI4LjA1MDc4MSAzNS4yNSAtMjYuMTI1IEMgMzcuMDcwMzEyIC0yNC4xOTUzMTIgMzkuMzc1IC0yMi43ODEyNSA0Mi4xNTYyNSAtMjEuODc1IEMgNDQuOTM3NSAtMjAuOTY4NzUgNDguMDM1MTU2IC0yMC41MTU2MjUgNTEuNDUzMTI1IC0yMC41MTU2MjUgTCA3Ni42MDkzNzUgLTIwLjUxNTYyNSBMIDc2LjYwOTM3NSAwIFogTSAzMC45Mzc1IC00OC43MTg3NSBMIDYyLjE4NzUgLTQ4LjcxODc1IEMgNjEuOTc2NTYyIC01MC40Mzc1IDYxLjY2MDE1NiAtNTIuMDkzNzUgNjEuMjM0Mzc1IC01My42ODc1IEMgNjAuODA0Njg4IC01NS4yODkwNjIgNjAuMTMyODEyIC01Ni43MDcwMzEgNTkuMjE4NzUgLTU3LjkzNzUgQyA1OC4zMTI1IC01OS4xNjQwNjIgNTcuMjY5NTMxIC02MC4yMzQzNzUgNTYuMDkzNzUgLTYxLjE0MDYyNSBDIDU0LjkxNDA2MiAtNjIuMDU0Njg4IDUzLjU1MDc4MSAtNjIuNzgxMjUgNTIgLTYzLjMxMjUgQyA1MC40NTcwMzEgLTYzLjg0Mzc1IDQ4LjcyMjY1NiAtNjQuMTA5Mzc1IDQ2Ljc5Njg3NSAtNjQuMTA5Mzc1IEMgNDQuMzM1OTM4IC02NC4xMDkzNzUgNDIuMTQ0NTMxIC02My42Nzk2ODggNDAuMjE4NzUgLTYyLjgyODEyNSBDIDM4LjMwMDc4MSAtNjEuOTcyNjU2IDM2LjcwMzEyNSAtNjAuODIwMzEyIDM1LjQyMTg3NSAtNTkuMzc1IEMgMzQuMTQwNjI1IC01Ny45Mzc1IDMzLjE0ODQzOCAtNTYuMjgxMjUgMzIuNDUzMTI1IC01NC40MDYyNSBDIDMxLjc2NTYyNSAtNTIuNTM5MDYyIDMxLjI1NzgxMiAtNTAuNjQ0NTMxIDMwLjkzNzUgLTQ4LjcxODc1IFogTSAzMC45Mzc1IC00OC43MTg3NSAiLz48L2c+PC9nPjwvZz48ZyBmaWxsPSIjMTY3MTY0IiBmaWxsLW9wYWNpdHk9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExNTIuOTc4NDQ5LCA4MDUuMTI0OTExKSI+PGcvPjwvZz48L2c+PC9zdmc+" alt="Palpawble" style="height:22px;width:auto;display:block"/>
+    </div>
+    <button class="demo-page-back" onclick="showDemoPage(false)">
+      <span class="icon">arrow_back</span>Retour à l'accueil
+    </button>
+    <button class="demo-login-link" onclick="showDemoPage(false);openModal('login')">Vous avez déjà accès? Connexion</button>
+  </nav>
+
+  <!-- Hero -->
+  <div class="demo-page-hero">
+    <div class="demo-page-badge">
+      <span class="icon-xs icon icon-fill">auto_awesome</span>
+      Accès bêta · Palpawble
+    </div>
+    <h1 class="demo-page-h1">Voyez <em>Palpawble</em> en action.<br>Dites-nous ce que vous en pensez.</h1>
+    <p class="demo-page-sub">Nous avons hâte de vous montrer ce que nous avons construit. Cette démo nous aide à améliorer l'expérience grâce à vos commentaires réels. Remplissez vos coordonnées ci-dessous pour débloquer l'accès.</p>
+  </div>
+
+  <!-- Locked video -->
+  <div class="demo-video-wrap">
+    <div class="demo-video-box">
+      <div class="demo-video-blur">
+        <div class="demo-video-lock-icon">
+          <span class="icon icon-fill">lock</span>
+        </div>
+        <div class="demo-video-lock-title">La démo se débloque après inscription</div>
+        <div class="demo-video-lock-sub">Remplissez le formulaire ci-dessous pour accéder au Guide de décision interactif complet — aucune carte de crédit requise.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form view (pre-filter + conditional forms) -->
+  <div class="demo-form-wrap" id="demo-form-view">
+    <div class="demo-form-card">
+
+      <!-- Header -->
+      <div class="demo-form-header">
+        <div class="demo-form-header-deco"></div>
+        <span class="demo-form-header-tag">Obtenir l'accès</span>
+        <div class="demo-form-header-title">Parlez-nous un peu de vous</div>
+        <div class="demo-form-header-sub">Ceci nous aide à vous orienter vers la bonne expérience de démo et à améliorer le produit.</div>
+      </div>
+
+      <div class="demo-form-body">
+
+        <!-- Step 1: Pre-filter -->
+        <div class="demo-prefilter">
+          <span class="demo-prefilter-label">Vous êtes…</span>
+          <div class="demo-type-toggle">
+            <button class="demo-type-btn" id="type-btn-enterprise" onclick="selectUserType('enterprise')">
+              <span class="demo-type-icon">🏢</span>
+              <span class="demo-type-title">Entreprise / Organisation</span>
+              <span class="demo-type-sub">Clinique vétérinaire, société protectrice, assureur ou partenaire d'entreprise</span>
+            </button>
+            <button class="demo-type-btn" id="type-btn-petowner" onclick="selectUserType('petowner')">
+              <span class="demo-type-icon">🐾</span>
+              <span class="demo-type-title">Propriétaire d'animal / Particulier</span>
+              <span class="demo-type-sub">Vous cherchez des soins, des subventions ou une aide financière pour votre animal</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="demo-form-divider"></div>
+
+        <!-- FORM A: Enterprise -->
+        <div class="demo-conditional" id="form-enterprise">
+          <div style="font-size:12px;color:var(--on-surf-v);margin-bottom:16px;line-height:1.55;background:var(--sec-cont);border-radius:10px;padding:10px 14px">
+            <strong style="color:#204450">Démo entreprise</strong> — Un spécialiste produit vous présentera la plateforme complète et discutera des options d'intégration.
+          </div>
+          <div class="df-grid2">
+            <div class="df-field">
+              <label class="df-label">Nom complet *</label>
+              <input class="df-input" id="ent-name" type="text" placeholder="Jane Smith"/>
+            </div>
+            <div class="df-field">
+              <label class="df-label">Nom de l'entreprise *</label>
+              <input class="df-input" id="ent-company" type="text" placeholder="Acme Vet Group"/>
+            </div>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Courriel professionnel *</label>
+            <input class="df-input" id="ent-email" type="email" placeholder="vous@entreprise.com"/>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Numéro de téléphone *</label>
+            <input class="df-input" id="ent-phone" type="tel" placeholder="+1 (555) 000-0000"/>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Logiciel vétérinaire actuel</label>
+            <select class="df-select" id="ent-software">
+              <option value="" disabled selected>Sélectionnez votre système actuel</option>
+              <option>Excel / Spreadsheets</option>
+              <option>Notion</option>
+              <option>Custom internal system</option>
+              <option>AVImark</option>
+              <option>ezyVet</option>
+              <option>Provet Cloud</option>
+              <option>Other</option>
+              <option>None</option>
+            </select>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Taille de l'équipe</label>
+            <select class="df-select" id="ent-team-size">
+              <option value="" disabled selected>Sélectionnez la taille de l'équipe</option>
+              <option>1</option>
+              <option>2–5</option>
+              <option>6–20</option>
+              <option>21–50</option>
+              <option>50+</option>
+            </select>
+          </div>
+          <button class="btn-demo-submit-enterprise" onclick="submitEnterprise()">
+            <span class="icon icon-sm">headset_mic</span>Parler à un expert
+          </button>
+          <p class="demo-form-privacy">Nous répondrons dans un délai d'un jour ouvrable. <a href="#">Politique de confidentialité</a></p>
+        </div>
+
+        <!-- FORM B: Pet Owner -->
+        <div class="demo-conditional" id="form-petowner">
+          <div style="font-size:12px;color:var(--on-surf-v);margin-bottom:16px;line-height:1.55;background:var(--primary-fix);border-radius:10px;padding:10px 14px;color:var(--primary-on)">
+            <strong>Accès bêta</strong> — Une fois votre formulaire soumis, nous vous enverrons par courriel un lien sécurisé vers la démo interactive en direct.
+          </div>
+          <div class="df-field">
+            <label class="df-label">Nom complet *</label>
+            <input class="df-input" id="po-name" type="text" placeholder="Sarah Chen"/>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Courriel *</label>
+            <input class="df-input" id="po-email" type="email" placeholder="vous@exemple.com"/>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Type d'animal <span class="df-optional">(optionnel)</span></label>
+            <select class="df-select" id="po-pet-type">
+              <option value="" selected>Sélectionnez le type d'animal</option>
+              <option>Dog</option>
+              <option>Cat</option>
+              <option>Rabbit</option>
+              <option>Bird</option>
+              <option>Guinea Pig</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="df-field">
+            <label class="df-label">Qu'espérez-vous résoudre? <span class="df-optional">(optionnel)</span></label>
+            <select class="df-select" id="po-goal">
+              <option value="" selected>Sélectionnez votre objectif principal</option>
+              <option>Find affordable vet care near me</option>
+              <option>Apply for a grant or financial aid</option>
+              <option>Understand my pet's health options</option>
+              <option>Manage my pet's medications & records</option>
+              <option>Just exploring the product</option>
+            </select>
+          </div>
+          <button class="btn-demo-submit-beta" onclick="submitBeta()">
+            <span class="icon icon-sm">pets</span>Accéder à la démo bêta
+          </button>
+          <p class="demo-form-privacy">Nous vous enverrons votre lien de démo sécurisé par courriel en quelques heures. <a href="#">Politique de confidentialité</a></p>
+        </div>
+
+      </div><!-- /form-body -->
+    </div><!-- /form-card -->
+  </div><!-- /form-wrap -->
+
+  <!-- Beta confirmation (post-submit for pet owners) -->
+  <div id="beta-confirm-view">
+    <div class="bcv-icon"><span class="icon icon-fill" style="color:var(--primary)">mark_email_read</span></div>
+    <h2 class="bcv-title">Consultez votre boîte de réception!</h2>
+    <p class="bcv-sub">Votre lien de démo authentifié est en route. Nous vous avons ajouté à notre liste bêta — attendez votre courriel dans les prochaines heures.</p>
+    <div class="bcv-email-box">
+      <span class="icon icon-fill" style="color:var(--primary)">email</span>
+      <span class="bcv-email-text" id="bcv-email-display">votre@courriel.com</span>
+    </div>
+    <div class="bcv-steps">
+      <div style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--on-surf);margin-bottom:12px">Ce qui se passe ensuite</div>
+      <div class="bcv-step">
+        <div class="bcv-step-num">1</div>
+        <div>Vous recevrez un <strong>lien sécurisé et authentifié</strong> vers la démo en direct par courriel — habituellement en quelques heures.</div>
+      </div>
+      <div class="bcv-step">
+        <div class="bcv-step-num">2</div>
+        <div>Cliquez sur le lien pour ouvrir votre <strong>session bêta personnalisée</strong> — aucun mot de passe requis, le lien est votre clé d'accès.</div>
+      </div>
+      <div class="bcv-step">
+        <div class="bcv-step-num">3</div>
+        <div>Après avoir exploré la démo, vous serez invité à partager des <strong>commentaires rapides</strong> — vos commentaires façonnent directement le produit.</div>
+      </div>
+      <div class="bcv-step">
+        <div class="bcv-step-num">4</div>
+        <div>Au lancement, les <strong>utilisateurs bêta obtiennent un accès anticipé</strong> et un soutien prioritaire.</div>
+      </div>
+    </div>
+    <button class="btn-bcv-back" onclick="showDemoPage(false)">← Retour à Palpawble</button>
+  </div>
+
+  <!-- Enterprise confirmation -->
+  <div id="enterprise-confirm-view">
+    <div class="bcv-icon" style="background:var(--sec-cont)"><span class="icon icon-fill" style="color:var(--secondary)">headset_mic</span></div>
+    <h2 class="bcv-title">Nous vous contacterons!</h2>
+    <p class="bcv-sub">Un spécialiste produit Palpawble vous contactera dans un délai d'un jour ouvrable pour planifier votre démo entreprise et discuter de vos besoins spécifiques.</p>
+    <div class="bcv-steps">
+      <div style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--on-surf);margin-bottom:12px">Ce qui se passe ensuite</div>
+      <div class="bcv-step">
+        <div class="bcv-step-num" style="background:var(--secondary)">1</div>
+        <div>Notre équipe examine votre soumission et <strong>vous contacte dans un délai d'un jour ouvrable</strong>.</div>
+      </div>
+      <div class="bcv-step">
+        <div class="bcv-step-num" style="background:var(--secondary)">2</div>
+        <div>Nous planifions une <strong>démo personnalisée de 30 minutes</strong> adaptée à votre type d'organisation et à vos objectifs.</div>
+      </div>
+      <div class="bcv-step">
+        <div class="bcv-step-num" style="background:var(--secondary)">3</div>
+        <div>Nous discutons <strong>intégration, tarification et déploiement</strong> — sans pression, juste une vraie conversation.</div>
+      </div>
+    </div>
+    <button class="btn-bcv-back" onclick="showDemoPage(false)">← Retour à Palpawble</button>
+  </div>
+
+  <!-- Live demo view — only accessible via authenticated link (simulated here) -->
+  <div id="live-demo-view">
+    <div class="live-demo-card">
+      <div class="ldc-header">
+        <div class="ldc-header-deco"></div>
+        <div class="ldc-header-left">
+          <div class="ldc-header-icon"><span class="icon icon-fill">volunteer_activism</span></div>
+          <div>
+            <div class="ldc-header-title">Guide de décision d'urgence</div>
+            <div class="ldc-header-sub">Palpawble · Démo bêta en direct</div>
+          </div>
+        </div>
+        <span class="ldc-beta-tag">Bêta</span>
+      </div>
+
+      <div class="ldc-body">
+        <!-- Progress dots -->
+        <div class="ldc-progress">
+          <div class="ldc-dot cur" id="ld1"></div>
+          <div class="ldc-dot" id="ld2"></div>
+          <div class="ldc-dot" id="ld3"></div>
+          <div class="ldc-dot" id="ld4"></div>
+          <div class="ldc-dot" id="ld5"></div>
+          <span class="ldc-step-label" id="ld-label">Étape 1 de 5</span>
+        </div>
+
+        <!-- Step 1: Pet type -->
+        <div class="ldc-step active" id="ldc1">
+          <div class="ldc-q">Qui a besoin de soins aujourd'hui?</div>
+          <div class="ldc-sub">Ceci nous aide à adapter les estimations de coûts et les options de soins à votre compagnon.</div>
+          <div class="ldc-pet-grid">
+            <div class="ldc-pet-opt" onclick="ldcSelPet(this)"><span class="ldc-pet-emoji">🐶</span><span class="ldc-pet-label">Chien</span></div>
+            <div class="ldc-pet-opt" onclick="ldcSelPet(this)"><span class="ldc-pet-emoji">🐱</span><span class="ldc-pet-label">Chat</span></div>
+            <div class="ldc-pet-opt" onclick="ldcSelPet(this)"><span class="ldc-pet-emoji">🐰</span><span class="ldc-pet-label">Petit animal</span></div>
+            <div class="ldc-pet-opt" onclick="ldcSelPet(this)"><span class="ldc-pet-emoji">🐦</span><span class="ldc-pet-label">Oiseau</span></div>
+          </div>
+          <div class="ldc-nav">
+            <button class="btn-ldc-next" onclick="ldcNext(2)">Continuer <span class="icon icon-sm" style="color:rgba(255,255,255,.8)">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- Step 2: Symptom -->
+        <div class="ldc-step" id="ldc2">
+          <div class="ldc-q">Quelle est votre principale préoccupation?</div>
+          <div class="ldc-sub">Choisissez le symptôme qui vous préoccupe le plus actuellement. Sans jugement — nous voulons vous aider à trouver le bon niveau de soins.</div>
+          <div class="ldc-sym-list">
+            <div class="ldc-sym-item" onclick="ldcSelSym(this)"><span class="ldc-sym-emoji">😮‍💨</span><span class="ldc-sym-text">Difficultés respiratoires ou effondrement</span><span class="ldc-urgency lu-hi">Urgent</span></div>
+            <div class="ldc-sym-item" onclick="ldcSelSym(this)"><span class="ldc-sym-emoji">🤢</span><span class="ldc-sym-text">Vomissements ou diarrhée persistante</span><span class="ldc-urgency lu-mi">Modéré</span></div>
+            <div class="ldc-sym-item" onclick="ldcSelSym(this)"><span class="ldc-sym-emoji">🦴</span><span class="ldc-sym-text">Boiterie, blessure ou enflure</span><span class="ldc-urgency lu-mi">Modéré</span></div>
+            <div class="ldc-sym-item" onclick="ldcSelSym(this)"><span class="ldc-sym-emoji">😴</span><span class="ldc-sym-text">Léthargie, ne mange ou ne boit pas</span><span class="ldc-urgency lu-lo">À surveiller</span></div>
+            <div class="ldc-sym-item" onclick="ldcSelSym(this)"><span class="ldc-sym-emoji">💊</span><span class="ldc-sym-text">Préoccupation liée aux médicaments ou dose manquée</span><span class="ldc-urgency lu-lo">À surveiller</span></div>
+          </div>
+          <div class="ldc-nav">
+            <button class="btn-ldc-back" onclick="ldcNext(1)">← Retour</button>
+            <button class="btn-ldc-next" onclick="ldcNext(3)">Continuer <span class="icon icon-sm" style="color:rgba(255,255,255,.8)">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Vet bill branch -->
+        <div class="ldc-step" id="ldc3">
+          <div class="ldc-q">Avez-vous reçu une facture vétérinaire?</div>
+          <div class="ldc-sub">Ceci détermine si nous vous aidons à trouver des subventions pour couvrir une facture existante, ou si nous localisons la bonne clinique pour les besoins de votre animal.</div>
+          <div class="ldc-bill-choice">
+            <div class="ldc-bill-btn" id="bill-yes-btn" onclick="selectBill('yes')">
+              <span class="ldc-bill-icon">🧾</span>
+              <span class="ldc-bill-label">Oui, j'ai une facture</span>
+              <span class="ldc-bill-desc">Téléversez votre facture — nous vous jumellerons à des subventions qui peuvent la couvrir</span>
+            </div>
+            <div class="ldc-bill-btn" id="bill-no-btn" onclick="selectBill('no')">
+              <span class="ldc-bill-icon">🏥</span>
+              <span class="ldc-bill-label">Pas encore de facture</span>
+              <span class="ldc-bill-desc">Nous trouverons les cliniques les plus proches qui répondent aux besoins de soins de votre animal</span>
+            </div>
+          </div>
+
+          <!-- YES branch: upload -->
+          <div id="bill-upload-section" style="display:none">
+            <div class="ldc-upload-zone" onclick="ldcSimulateUpload()">
+              <span class="icon icon-fill">upload_file</span>
+              <div class="ldc-upload-title">Téléversez votre facture ou estimation vétérinaire</div>
+              <div class="ldc-upload-sub">PDF, JPG ou PNG · Traité de façon sécurisée — jamais partagé</div>
+            </div>
+            <div id="ldc-uploaded-file" style="display:none">
+              <div class="ldc-uploaded">
+                <div class="ldc-uploaded-icon"><span class="icon icon-fill" style="color:var(--primary);font-size:15px">picture_as_pdf</span></div>
+                <div>
+                  <div class="ldc-uploaded-name">vet_invoice_oct2024.pdf</div>
+                  <div class="ldc-uploaded-size">Téléversé · 128 Ko · Sécurisé</div>
+                </div>
+                <span class="icon icon-fill" style="margin-left:auto;color:var(--primary);font-size:18px">check_circle</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ldc-nav">
+            <button class="btn-ldc-back" onclick="ldcNext(2)">← Retour</button>
+            <button class="btn-ldc-next" onclick="ldcNext(4)">Continuer <span class="icon icon-sm" style="color:rgba(255,255,255,.8)">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- Step 4: Budget -->
+        <div class="ldc-step" id="ldc4">
+          <div class="ldc-q">Que pouvez-vous gérer aujourd'hui?</div>
+          <div class="ldc-sub">Sans jugement — ceci nous aide à proposer des options réalistes. Nous avons une solution pour chaque situation.</div>
+          <div class="ldc-budget-list">
+            <div class="ldc-budget-opt" onclick="ldcSelBud(this)">
+              <div><div class="ldc-budget-main">Moins de 100 $</div><div class="ldc-budget-sub">Soins caritatifs ou options sans frais</div></div>
+              <span class="ldc-budget-check">check_circle</span>
+            </div>
+            <div class="ldc-budget-opt" onclick="ldcSelBud(this)">
+              <div><div class="ldc-budget-main">100 $ – 300 $</div><div class="ldc-budget-sub">Clinique à faible coût ou plan de paiement à 0%</div></div>
+              <span class="ldc-budget-check">check_circle</span>
+            </div>
+            <div class="ldc-budget-opt" onclick="ldcSelBud(this)">
+              <div><div class="ldc-budget-main">300 $ – 800 $</div><div class="ldc-budget-sub">Clinique standard avec flexibilité</div></div>
+              <span class="ldc-budget-check">check_circle</span>
+            </div>
+            <div class="ldc-budget-opt" onclick="ldcSelBud(this)">
+              <div><div class="ldc-budget-main">800 $+</div><div class="ldc-budget-sub">Urgence complète ou soins spécialisés</div></div>
+              <span class="ldc-budget-check">check_circle</span>
+            </div>
+          </div>
+          <div class="ldc-nav">
+            <button class="btn-ldc-back" onclick="ldcNext(3)">← Retour</button>
+            <button class="btn-ldc-next" onclick="ldcNext(5)"><span class="icon icon-sm" style="color:rgba(255,255,255,.8)">auto_awesome</span> Voir mes résultats</button>
+          </div>
+        </div>
+
+        <!-- Step 5a: Results — has vet bill → grant matching -->
+        <div class="ldc-step" id="ldc5-bill" style="display:none">
+          <div class="ldc-result-hero">
+            <div class="ldc-result-tag"><span class="icon icon-xs icon-fill" style="color:var(--primary-dim);font-family:'Material Symbols Outlined';font-size:13px">volunteer_activism</span>Subventions trouvées</div>
+            <div class="ldc-result-title">3 subventions pourraient couvrir votre facture</div>
+            <div class="ldc-result-body">Selon votre facture et votre profil, nous vous avons jumelé à des subventions totalisant jusqu'à 500 $. Le meilleur jumelage a un score d'admissibilité de 94% et prend environ 8 minutes à postuler.</div>
+          </div>
+          <div style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--on-surf);margin-bottom:12px">Vos meilleurs jumelages de subventions</div>
+          <div class="ldc-grant-card">
+            <div class="ldc-grant-icon"><span class="icon icon-fill">volunteer_activism</span></div>
+            <div>
+              <div class="ldc-grant-name">Fondation Faraday — Subvention soins d'urgence</div>
+              <div class="ldc-grant-meta">Ontario et C.-B. · Continu · ~8 min pour postuler · 94% de jumelage</div>
+            </div>
+            <div class="ldc-grant-amt">420 $</div>
+          </div>
+          <div class="ldc-grant-card">
+            <div class="ldc-grant-icon" style="background:var(--sec-cont)"><span class="icon icon-fill" style="color:var(--secondary)">payments</span></div>
+            <div>
+              <div class="ldc-grant-name">PetRelief Canada — Fonds de soins urgents</div>
+              <div class="ldc-grant-meta">Partout au pays · Admission mensuelle · ~12 min · 78% de jumelage</div>
+            </div>
+            <div class="ldc-grant-amt" style="color:var(--secondary)">300 $</div>
+          </div>
+          <div class="ldc-disclaimer">
+            <span class="icon">info</span>
+            Ceci n'est pas un avis financier. L'approbation de la subvention dépend des critères du fournisseur. Palpawble facilite la demande — sans garantir l'approbation.
+          </div>
+          <div class="ldc-signup-nudge">
+            <div class="ldc-signup-nudge-deco"></div>
+            <h3>Postulez pour ces subventions dans l'application complète</h3>
+            <p>Créez un compte gratuit pour soumettre des demandes, téléverser des documents et suivre le statut d'approbation — tout au même endroit.</p>
+            <div class="ldc-nudge-btns">
+              <button class="btn-ldc-signup" onclick="showDemoPage()"><span class="icon icon-sm" style="color:var(--primary-on)">pets</span>Demander l'accès</button>
+              <button class="btn-ldc-restart" onclick="ldcRestart()">Réessayer</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5b: Results — no bill → nearest clinics -->
+        <div class="ldc-step" id="ldc5-clinics" style="display:none">
+          <div class="ldc-result-hero" style="background:linear-gradient(135deg,rgba(196,232,247,0.45),rgba(161,242,226,0.3))">
+            <div class="ldc-result-tag" style="color:var(--secondary)"><span class="icon icon-xs icon-fill" style="color:var(--secondary);font-family:'Material Symbols Outlined';font-size:13px">local_hospital</span>Cliniques près de vous</div>
+            <div class="ldc-result-title">3 cliniques jumelées aux besoins de votre animal</div>
+            <div class="ldc-result-body">Selon le symptôme et le budget que vous avez partagés, voici les meilleures options triées par distance, coût et type de soins.</div>
+          </div>
+          <div style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--on-surf);margin-bottom:12px">Cliniques recommandées</div>
+          <div class="ldc-clinic-card">
+            <div class="ldc-clinic-top">
+              <div>
+                <div class="ldc-clinic-name">Urgence vétérinaire East Van</div>
+                <div class="ldc-clinic-dist">0,8 km · Ouvert 24/7</div>
+              </div>
+              <span class="ldc-clinic-care-tag">Soins d'urgence</span>
+            </div>
+            <div class="ldc-clinic-meta">742 Maple Dr, Vancouver · Financement Scratchpay à 0% disponible · Aucune vérification de crédit</div>
+            <div class="ldc-clinic-footer">
+              <button class="btn-ldc-call"><span class="icon icon-xs" style="font-size:14px">call</span>Appeler maintenant</button>
+              <button class="btn-ldc-more">Itinéraire</button>
+              <button class="btn-ldc-more">Détails</button>
+            </div>
+          </div>
+          <div class="ldc-clinic-card">
+            <div class="ldc-clinic-top">
+              <div>
+                <div class="ldc-clinic-name">Paws & Hearts Wellness</div>
+                <div class="ldc-clinic-dist">2,4 km · Ouvert jusqu'à 20 h</div>
+              </div>
+              <span class="ldc-clinic-care-tag" style="background:var(--tert-cont);color:var(--on-tert-cont)">Faible coût</span>
+            </div>
+            <div class="ldc-clinic-meta">Organisme caritatif · Tarification à échelle variable · Sans rendez-vous accepté · Bien-être et diagnostics</div>
+            <div class="ldc-clinic-footer">
+              <button class="btn-ldc-call"><span class="icon icon-xs" style="font-size:14px">call</span>Appeler maintenant</button>
+              <button class="btn-ldc-more">Itinéraire</button>
+              <button class="btn-ldc-more">Détails</button>
+            </div>
+          </div>
+          <div class="ldc-clinic-card">
+            <div class="ldc-clinic-top">
+              <div>
+                <div class="ldc-clinic-name">Kindred Vet Clinic</div>
+                <div class="ldc-clinic-dist">3,1 km · Ouvert jusqu'à 22 h</div>
+              </div>
+              <span class="ldc-clinic-care-tag" style="background:var(--primary-fix);color:var(--primary-on)">Standard</span>
+            </div>
+            <div class="ldc-clinic-meta">Service complet · Plan de paiement sur demande · Tarification transparente en ligne</div>
+            <div class="ldc-clinic-footer">
+              <button class="btn-ldc-call"><span class="icon icon-xs" style="font-size:14px">call</span>Appeler maintenant</button>
+              <button class="btn-ldc-more">Itinéraire</button>
+              <button class="btn-ldc-more">Détails</button>
+            </div>
+          </div>
+          <div class="ldc-disclaimer">
+            <span class="icon">info</span>
+            La disponibilité et les heures des cliniques peuvent changer. Appelez toujours à l'avance pour confirmer qu'elles peuvent recevoir votre animal.
+          </div>
+          <div class="ldc-signup-nudge">
+            <div class="ldc-signup-nudge-deco"></div>
+            <h3>Sauvegardez cette liste de cliniques et obtenez plus de jumelages</h3>
+            <p>Créez un compte gratuit pour mettre des cliniques en favoris, postuler pour des subventions et suivre les soins de votre animal — tout au même endroit.</p>
+            <div class="ldc-nudge-btns">
+              <button class="btn-ldc-signup" onclick="showDemoPage()"><span class="icon icon-sm" style="color:var(--primary-on)">pets</span>Demander l'accès</button>
+              <button class="btn-ldc-restart" onclick="ldcRestart()">Réessayer</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /ldc-body -->
+    </div><!-- /live-demo-card -->
+  </div><!-- /live-demo-view -->
+
+</div><!-- /demo-page -->
+
+<!-- Demo overlay removed -->
+
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   VIEW ROUTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function showDemoPage(open) {
+  if (open === undefined) open = true;
+  document.getElementById('landing').style.display = open ? 'none' : 'block';
+  const dp = document.getElementById('demo-page');
+  if (open) {
+    dp.classList.add('open');
+    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
+    document.getElementById('demo-form-view').style.display = '';
+    document.getElementById('beta-confirm-view').classList.remove('open');
+    document.getElementById('enterprise-confirm-view').classList.remove('open');
+    document.getElementById('live-demo-view').classList.remove('open');
+    resetDemoForm();
+  } else {
+    dp.classList.remove('open');
+    document.getElementById('login-access-notice').style.display = 'none';
+    document.getElementById('landing').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+}
+
+function showLearnMore() {
+  const el = document.getElementById('features');
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PRE-FILTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var selectedUserType = null;
+
+function selectUserType(type) {
+  selectedUserType = type;
+  document.getElementById('type-btn-enterprise').classList.toggle('selected', type === 'enterprise');
+  document.getElementById('type-btn-petowner').classList.toggle('selected', type === 'petowner');
+  document.getElementById('form-enterprise').classList.toggle('visible', type === 'enterprise');
+  document.getElementById('form-petowner').classList.toggle('visible', type === 'petowner');
+}
+
+function resetDemoForm() {
+  selectedUserType = null;
+  ['type-btn-enterprise','type-btn-petowner'].forEach(function(id){ document.getElementById(id).classList.remove('selected'); });
+  ['form-enterprise','form-petowner'].forEach(function(id){ document.getElementById(id).classList.remove('visible'); });
+  billChoice = null; uploadDone = false;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   FORM SUBMISSIONS → ZAPIER WEBHOOK → NOTION + EMAIL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var ZAPIER_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/19168791/42bf1iy/';
+
+function setSubmitLoading(btnEl, loading, originalHTML) {
+  if (loading) {
+    btnEl.dataset.originalHtml = btnEl.innerHTML;
+    btnEl.innerHTML = '<span class="icon icon-sm" style="animation:spin 0.8s linear infinite">progress_activity</span>Envoi en cours…';
+    btnEl.disabled = true;
+    btnEl.style.opacity = '0.75';
+    btnEl.style.cursor = 'not-allowed';
+  } else {
+    btnEl.innerHTML = btnEl.dataset.originalHtml || originalHTML;
+    btnEl.disabled = false;
+    btnEl.style.opacity = '';
+    btnEl.style.cursor = '';
+  }
+}
+
+function submitEnterprise() {
+  var btn = document.querySelector('.btn-demo-submit-enterprise');
+
+  var name     = document.getElementById('ent-name').value.trim();
+  var company  = document.getElementById('ent-company').value.trim();
+  var email    = document.getElementById('ent-email').value.trim();
+  var phone    = document.getElementById('ent-phone').value.trim();
+  var software = document.getElementById('ent-software').value;
+  var teamSize = document.getElementById('ent-team-size').value;
+
+  // Basic required-field validation
+  if (!name || !company || !email || !phone) {
+    alert('Veuillez remplir tous les champs obligatoires (Nom, Entreprise, Courriel, Téléphone).');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('Veuillez entrer une adresse courriel valide.');
+    return;
+  }
+
+  var payload = {
+    "Name": name,
+    "Email": email,
+    "Lead Type": "Business",
+    "Company Name": company,
+    "Phone": phone,
+    "Current Software": software || "",
+    "Team Size": teamSize || "",
+    "Pet Type": "",
+    "Goal": "",
+    "Source Page": "/try-live-demo"
+  };
+
+  setSubmitLoading(btn, true);
+
+  fetch(ZAPIER_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(response) {
+    setSubmitLoading(btn, false);
+    if (!response.ok) {
+      console.error('Webhook responded with status:', response.status);
+    }
+    document.getElementById('demo-form-view').style.display = 'none';
+    document.getElementById('enterprise-confirm-view').classList.add('open');
+    window.scrollTo(0, 0);
+  })
+  .catch(function(err) {
+    setSubmitLoading(btn, false);
+    console.error('Webhook submission failed:', err);
+    // Still show confirmation — don't block the user on a network hiccup.
+    // The lead is more important to acknowledge than to gate on this call succeeding.
+    document.getElementById('demo-form-view').style.display = 'none';
+    document.getElementById('enterprise-confirm-view').classList.add('open');
+    window.scrollTo(0, 0);
+  });
+}
+
+function submitBeta() {
+  var btn = document.querySelector('.btn-demo-submit-beta');
+
+  var name    = document.getElementById('po-name').value.trim();
+  var email   = document.getElementById('po-email').value.trim();
+  var petType = document.getElementById('po-pet-type').value;
+  var goal    = document.getElementById('po-goal').value;
+
+  if (!name || !email) {
+    alert('Veuillez remplir votre nom et votre courriel.');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('Veuillez entrer une adresse courriel valide.');
+    return;
+  }
+
+  var payload = {
+    "Name": name,
+    "Email": email,
+    "Lead Type": "Individual",
+    "Company Name": "",
+    "Phone": "",
+    "Current Software": "",
+    "Team Size": "",
+    "Pet Type": petType || "",
+    "Goal": goal || "",
+    "Source Page": "/try-live-demo"
+  };
+
+  setSubmitLoading(btn, true);
+
+  fetch(ZAPIER_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(response) {
+    setSubmitLoading(btn, false);
+    if (!response.ok) {
+      console.error('Webhook responded with status:', response.status);
+    }
+    document.getElementById('bcv-email-display').textContent = email;
+    document.getElementById('demo-form-view').style.display = 'none';
+    document.getElementById('beta-confirm-view').classList.add('open');
+    window.scrollTo(0, 0);
+  })
+  .catch(function(err) {
+    setSubmitLoading(btn, false);
+    console.error('Webhook submission failed:', err);
+    document.getElementById('bcv-email-display').textContent = email;
+    document.getElementById('demo-form-view').style.display = 'none';
+    document.getElementById('beta-confirm-view').classList.add('open');
+    window.scrollTo(0, 0);
+  });
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   LIVE DEMO — 5-STEP GUIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var ldcCur = 1;
+var billChoice = null;
+var uploadDone = false;
+
+var ldcLabels = {
+  1:'Étape 1 de 5 — Type d\'animal',
+  2:'Étape 2 de 5 — Symptôme',
+  3:'Étape 3 de 5 — Facture vétérinaire',
+  4:'Étape 4 de 5 — Budget',
+  5:'Étape 5 de 5 — Vos résultats'
+};
+
+function showLiveDemo() {
+  var dp = document.getElementById('demo-page');
+  dp.classList.add('open');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('demo-form-view').style.display = 'none';
+  document.getElementById('live-demo-view').classList.add('open');
+  ldcNext(1, true);
+  window.scrollTo(0, 0);
+}
+
+function ldcNext(n, noScroll) {
+  if (n === 5) {
+    document.getElementById('ldc5-bill').style.display    = billChoice === 'yes' ? 'block' : 'none';
+    document.getElementById('ldc5-clinics').style.display = billChoice === 'no'  ? 'block' : 'none';
+    document.getElementById('ldc5-bill').classList.toggle('active',    billChoice === 'yes');
+    document.getElementById('ldc5-clinics').classList.toggle('active', billChoice === 'no');
+  }
+  document.querySelectorAll('.ldc-step').forEach(function(s){ s.classList.remove('active'); });
+  if (n < 5) { document.getElementById('ldc' + n).classList.add('active'); }
+  for (var i = 1; i <= 5; i++) {
+    var d = document.getElementById('ld' + i);
+    if (!d) continue;
+    d.className = 'ldc-dot';
+    if (i < n) d.classList.add('done');
+    else if (i === n) d.classList.add('cur');
+  }
+  document.getElementById('ld-label').textContent = ldcLabels[n] || 'Résultats';
+  ldcCur = n;
+  if (!noScroll) {
+    var lv = document.getElementById('live-demo-view');
+    if (lv) lv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function ldcRestart() {
+  billChoice = null; uploadDone = false;
+  document.getElementById('bill-yes-btn').classList.remove('yes-sel');
+  document.getElementById('bill-no-btn').classList.remove('no-sel');
+  document.getElementById('bill-upload-section').style.display = 'none';
+  document.getElementById('ldc-uploaded-file').style.display = 'none';
+  document.querySelectorAll('.ldc-pet-opt').forEach(function(e){ e.classList.remove('sel'); });
+  document.querySelectorAll('.ldc-sym-item').forEach(function(e){ e.classList.remove('sel'); });
+  document.querySelectorAll('.ldc-budget-opt').forEach(function(e){ e.classList.remove('sel'); });
+  ldcNext(1, true);
+}
+
+function ldcSelPet(el) { el.closest('.ldc-pet-grid').querySelectorAll('.ldc-pet-opt').forEach(function(e){ e.classList.remove('sel'); }); el.classList.add('sel'); }
+function ldcSelSym(el) { el.closest('.ldc-sym-list').querySelectorAll('.ldc-sym-item').forEach(function(e){ e.classList.remove('sel'); }); el.classList.add('sel'); }
+function ldcSelBud(el) { el.closest('.ldc-budget-list').querySelectorAll('.ldc-budget-opt').forEach(function(e){ e.classList.remove('sel'); }); el.classList.add('sel'); }
+
+function selectBill(choice) {
+  billChoice = choice;
+  document.getElementById('bill-yes-btn').classList.toggle('yes-sel', choice === 'yes');
+  document.getElementById('bill-no-btn').classList.toggle('no-sel',  choice === 'no');
+  document.getElementById('bill-upload-section').style.display = choice === 'yes' ? 'block' : 'none';
+}
+
+function ldcSimulateUpload() {
+  uploadDone = true;
+  document.getElementById('ldc-uploaded-file').style.display = 'block';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   LOGIN MODAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function openModal(tab) {
+  document.getElementById('modal-overlay').classList.add('open');
+  switchTab(tab);
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function switchTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('form-login').style.display  = tab === 'login'  ? '' : 'none';
+  document.getElementById('form-signup').style.display = tab === 'signup' ? '' : 'none';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   APP ENTRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function enterApp() {
+  closeModal();
+  // Dashboard not available in public version.
+  // Authenticated users access via emailed link.
+  document.getElementById('login-access-notice').style.display = 'flex';
+  document.body.style.overflow = '';
+  window.scrollTo(0, 0);
+}
+function exitApp() {
+  document.getElementById('login-access-notice').style.display = 'none';
+  document.getElementById('landing').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+/* Dashboard emergency functions removed */
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SCROLL ANIMATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+document.querySelectorAll('.lp-nav-link[href^="#"]').forEach(function(link){
+  link.addEventListener('click', function(e){
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior:'smooth' });
+  });
+});
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='none'; } });
+},{threshold:0.1});
+document.querySelectorAll('.feature-card,.how-step,.testimonial-card').forEach(function(el){
+  el.style.opacity='0'; el.style.transform='translateY(20px)';
+  el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+<!-- ── Login access notice (replaces app in public version) ── -->
+<style>
+#login-access-notice {
+  display: none;
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(56,56,51,0.55);
+  backdrop-filter: blur(12px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.lan-card {
+  background: var(--white);
+  border-radius: 28px;
+  padding: 44px 40px;
+  max-width: 440px; width: 100%;
+  box-shadow: 0 24px 80px rgba(56,56,51,0.22);
+  text-align: center;
+  animation: modalIn 0.28s ease;
+}
+.lan-icon { width: 68px; height: 68px; border-radius: 50%; background: var(--primary-fix); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.lan-icon .icon { color: var(--primary); font-size: 32px; }
+.lan-title { font-family: var(--font-h); font-size: 22px; font-weight: 800; color: var(--on-surf); letter-spacing: -0.025em; margin-bottom: 10px; }
+.lan-sub { font-size: 14px; color: var(--on-surf-v); line-height: 1.65; margin-bottom: 28px; }
+.lan-email-row { display: flex; align-items: center; gap: 10px; background: var(--surf-mid); border-radius: 12px; padding: 13px 16px; margin-bottom: 24px; text-align: left; }
+.lan-email-row .icon { color: var(--primary); font-size: 20px; flex-shrink: 0; }
+.lan-email-title { font-family: var(--font-h); font-size: 13px; font-weight: 700; color: var(--on-surf); }
+.lan-email-sub { font-size: 11px; color: var(--on-surf-v); margin-top: 2px; }
+.btn-lan-back { height: 48px; padding: 0 28px; background: linear-gradient(135deg, var(--primary), var(--primary-dim)); color: #fff; border: none; border-radius: 99px; font-family: var(--font-h); font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 6px 20px rgba(22,113,100,0.28); transition: all 0.18s; }
+.btn-lan-back:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(22,113,100,0.38); }
+.lan-note { font-size: 11px; color: var(--on-surf-v); margin-top: 16px; line-height: 1.55; }
+</style>
+
+<div id="login-access-notice">
+  <div class="lan-card">
+    <div class="lan-icon"><span class="icon icon-fill">mark_email_read</span></div>
+    <div class="lan-title">Consultez votre boîte de réception</div>
+    <div class="lan-sub">Votre lien d'accès authentifié au tableau de bord Palpawble a été envoyé par courriel. Cliquez-y pour accéder à votre session personnelle — aucun mot de passe requis.</div>
+    <div class="lan-email-row">
+      <span class="icon icon-fill">email</span>
+      <div>
+        <div class="lan-email-title">Lien d'accès envoyé</div>
+        <div class="lan-email-sub">Arrive habituellement en quelques minutes · Vérifiez aussi vos courriels indésirables</div>
+      </div>
+    </div>
+    <button class="btn-lan-back" onclick="exitApp()">
+      <span class="icon icon-sm">arrow_back</span> Retour à Palpawble
+    </button>
+    <div class="lan-note">Lien non reçu? Contactez-nous à <strong>hello@palpawble.ca</strong></div>
+  </div>
+</div>
+
+</body>
+</html>
