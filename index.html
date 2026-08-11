@@ -7,6 +7,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <style>
+   /* ━━━ PRE-LAUNCH BANNER ━━━ */
+.prelaunch-banner {
+  background: linear-gradient(90deg, #E85D59 0%, #D04A46 100%);
+  color: #fff;
+  padding: 10px 52px 10px 20px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; flex-wrap: wrap;
+  font-family: var(--font-b); font-size: 13px; font-weight: 500;
+  line-height: 1.45; text-align: center;
+  position: sticky; top: 0; z-index: 300;
+  box-shadow: 0 2px 10px rgba(153,27,27,0.4);
+}
+.pb-text strong { font-family: var(--font-h); font-weight: 800; letter-spacing: -0.01em; }
+.pb-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 99px; padding: 5px 14px;
+  font-family: var(--font-h); font-size: 12px; font-weight: 700;
+  color: #fff; cursor: pointer; white-space: nowrap;
+  transition: background 0.15s;
+}
+.pb-btn:hover { background: rgba(255,255,255,0.3); }
+.pb-close {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.55); font-size: 18px; padding: 0; line-height: 1;
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 20;
+  transition: color 0.15s;
+}
+.pb-close:hover { color: #fff; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    TOKENS
