@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · Palpawble</title>
+<meta name="description" content="How Palpawble collects, uses, shares and protects your data and your pet's data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1d4641;
+    --forest-deep: #163833;
+    --mint: #9fd9c4;
+    --ink: #1f2a28;
+    --muted: #5b6b67;
+    --paper: #f7faf8;
+    --line: #dbe6e2;
+    --tint: #eaf4f0;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.65;
+    font-size: 17px;
+  }
+  a { color: var(--forest); }
+  a:focus-visible { outline: 2px solid var(--forest); outline-offset: 3px; border-radius: 3px; }
+
+  .topbar { background: var(--forest); }
+  .topbar-inner {
+    max-width: 1120px; margin: 0 auto; padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: #fff; text-decoration: none; font-weight: 800; font-size: 22px; letter-spacing: -0.01em;
+  }
+  .brand svg { width: 26px; height: 26px; fill: #8fe0c6; flex-shrink: 0; }
+  .back { color: #cfe3dc; text-decoration: none; font-size: 15px; }
+  .back:hover { color: #fff; }
+
+  .hero { background: var(--forest); color: #fff; padding: 40px 24px 56px; }
+  .hero-inner { max-width: 760px; margin: 0 auto; }
+  .hero h1 { font-size: clamp(34px, 5vw, 48px); line-height: 1.1; margin: 0 0 12px; letter-spacing: -0.02em; }
+  .hero p { margin: 0; color: #cfe3dc; }
+
+  main { max-width: 760px; margin: 0 auto; padding: 48px 24px 72px; }
+  .promises {
+    background: var(--tint); border-left: 4px solid var(--forest);
+    border-radius: 0 12px 12px 0; padding: 20px 24px; margin: 24px 0 8px;
+  }
+  .promises ul { margin: 0; padding-left: 20px; }
+  .promises li { margin: 6px 0; }
+
+  h2 {
+    font-size: 24px; line-height: 1.25; margin: 48px 0 12px; letter-spacing: -0.01em;
+    scroll-margin-top: 24px;
+  }
+  h3 { font-size: 18px; margin: 24px 0 6px; }
+  p, li { max-width: 68ch; }
+  ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--tint); font-weight: 700; }
+  tr:last-child td { border-bottom: 0; }
+  .note { font-size: 14px; color: var(--muted); }
+
+  .footer { background: var(--forest); color: #d3e3de; }
+  .footer-inner { max-width: 1120px; margin: 0 auto; padding: 56px 24px 32px; }
+  .footer-top {
+    display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px 32px;
+  }
+  .footer .brand { font-size: 20px; }
+  .footer-tagline { color: #b9cfc8; font-size: 15px; line-height: 1.65; max-width: 30ch; margin: 18px 0 24px; }
+  .socials { display: flex; gap: 12px; }
+  .socials a {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #b9cfc8;
+  }
+  .socials a:hover { background: rgba(255,255,255,0.16); color: #fff; }
+  .socials svg { width: 18px; height: 18px; fill: currentColor; }
+  .footer-col h4 {
+    margin: 4px 0 18px; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #8fb2a9;
+  }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; }
+  .footer-col li { margin: 0 0 12px; }
+  .footer a { color: #d3e3de; text-decoration: none; }
+  .footer a:hover { color: #fff; }
+  .footer-bottom {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12);
+    display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; align-items: center;
+    font-size: 14px; color: #9dbab2;
+  }
+  .footer-bottom nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  .footer-bottom a { color: #9dbab2; }
+  .footer-bottom a[aria-current="page"] { color: #fff; }
+  @media (max-width: 860px) {
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+  @media (max-width: 480px) {
+    .footer-top { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="Palpawble home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="5" cy="10" rx="2.3" ry="2.8"/><ellipse cx="9.3" cy="5.6" rx="2.3" ry="2.8"/><ellipse cx="14.7" cy="5.6" rx="2.3" ry="2.8"/><ellipse cx="19" cy="10" rx="2.3" ry="2.8"/><path d="M12 11c-3.2 0-6.5 4.2-6.5 7.2 0 2 1.5 2.8 3.2 2.8 1.4 0 2.2-.7 3.3-.7s1.9.7 3.3.7c1.7 0 3.2-.8 3.2-2.8 0-3-3.3-7.2-6.5-7.2z"/></svg>
+      Palpawble
+    </a>
+    <a class="back" href="/">Back to home</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Privacy Policy</h1>
+    <p>Last updated: 25/09/2026</p>
+  </div>
+</section>
+
+<main>
+
+  <h2 id="commitment">1. Our commitment to you</h2>
+  <p>Palpawble helps you find care for your pet, access grants and funding, and get recommendations that fit your situation. To do that well, we need to understand some information about you and your pet. This policy explains, in plain language, what we collect, why we collect it, who we share it with, how long we keep it, and the control you have over it.</p>
+  <div class="promises">
+    <ul>
+      <li><strong>We use your data to serve you</strong>, specifically to improve your experience and match you with relevant recommendations and funding opportunities.</li>
+      <li><strong>We never sell your personal data.</strong></li>
+      <li><strong>We share identifiable information with a partner only when you choose to</strong> be connected with that partner.</li>
+      <li><strong>You can delete your account at any time.</strong></li>
+    </ul>
+  </div>
+
+  <h2 id="who-we-are">2. Who we are</h2>
+  <p>Palpawble is operated by Palpawble Inc. ("Palpawble", "we", "us", "our"). For any privacy question, contact us at <a href="mailto:welcome@uxbymia.com?subject=Privacy">welcome@uxbymia.com</a>.</p>
+
+  <h2 id="what-we-collect">3. Information we collect</h2>
+  <h3>Information you give us</h3>
+  <p>Account details (name, email address, password, phone number); profile information (such as your location, household situation, goals, and funding needs); financial or eligibility information you choose to provide so we can assess funding fit; and messages you send to us or through the platform.</p>
+  <h3>Information about your pet(s)</h3>
+  <p>Species, breed, age, and weight; health conditions, treatments, and veterinary history you choose to share; cost of care and spending on pet-related services; food type, brands, and feeding habits; and the location where your pet lives or receives care. Pet information is linked to your account, so we treat it with the same care as your own personal data.</p>
+  <h3>Information collected automatically</h3>
+  <p>How you use Palpawble (pages viewed, features used, recommendations clicked or dismissed, searches); device and technical data (browser type, operating system, IP address, approximate location); and cookies and similar technologies.</p>
+  <h3>Information from third parties</h3>
+  <p>Information from sign-in providers you choose to use, and from partners you ask us to connect with.</p>
+  <p>We do not intentionally collect sensitive personal data about you (such as health, religion, or ethnicity). Please do not provide such information unless a specific funding program requires it and you choose to share it.</p>
+
+  <h2 id="how-we-use">4. How we use your information</h2>
+  <p>We use your information only for the following purposes:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Purpose</th><th scope="col">What this means</th><th scope="col">Legal basis*</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Provide the service</td><td>Create and manage your account, run the platform</td><td>Contract</td></tr>
+        <tr><td>Personalised recommendations</td><td>Suggest care options, resources, and opportunities relevant to your profile and activity</td><td>Legitimate interest / Consent</td></tr>
+        <tr><td>Funding pathway matching</td><td>Compare your profile against grants, funding programs, and partner criteria to identify good fits</td><td>Contract / Consent</td></tr>
+        <tr><td>Pet care insights</td><td>Identify patterns in pet health, care costs, and nutrition to improve recommendations and share de-identified insights with vets and institutions</td><td>Legitimate interest / Consent</td></tr>
+        <tr><td>Improve Palpawble</td><td>Analyse usage trends to improve features and matching quality</td><td>Legitimate interest</td></tr>
+        <tr><td>Security and fraud prevention</td><td>Protect accounts and detect misuse</td><td>Legitimate interest / Legal obligation</td></tr>
+        <tr><td>Communications</td><td>Service messages, and marketing only if you opt in</td><td>Contract / Consent</td></tr>
+        <tr><td>Legal compliance</td><td>Meet legal, tax, and regulatory requirements</td><td>Legal obligation</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">*Legal bases apply where laws such as the GDPR require them.</p>
+  <p><strong>Automated matching.</strong> Our recommendation and funding-matching tools use automated analysis of your profile. These results are suggestions only. Palpawble does not make final funding decisions; those are made by funding partners. You may ask us to explain how a match was generated and request human review.</p>
+  <p>We will not use your data for purposes unrelated to those listed above without first informing you and, where required, asking for your consent.</p>
+
+  <h2 id="sharing">5. How we share your information</h2>
+  <p>We share data only for the purpose of improving your experience and connecting you with relevant care and funding, and always with safeguards in place.</p>
+
+  <h3>Funding and program partners</h3>
+  <p>We share your identifiable information with a funding partner <strong>only when you take an action to be connected</strong> (for example, clicking "Apply", "Connect", or "Share my profile" with a specific partner). Before sharing, we show you which partner will receive your information and what will be shared. You can revoke future sharing at any time; however, a partner that has already received your information will handle it under its own privacy policy.</p>
+
+  <h3>Veterinarians and institutions</h3>
+  <p>We may share patterns and observations about pets with veterinarians, veterinary clinics, animal welfare organisations, research institutions, and similar partners to improve pet care, services, and funding programs. This may include:</p>
+  <ul>
+    <li><strong>Health conditions and care costs</strong>, such as how common certain conditions are and typical treatment costs.</li>
+    <li><strong>Food types and brands</strong>, such as feeding trends and their links to health outcomes.</li>
+    <li><strong>Location</strong>, shared only at an area level (for example, city, region, or postcode district). Your exact address is never included.</li>
+  </ul>
+  <p>These insights are shared in <strong>aggregated or de-identified form</strong> and do not include your name, contact details, or anything that could reasonably identify you or your household. Individual pet records, including a specific pet's health history, are shared with a named veterinarian or institution <strong>only with your explicit consent</strong> (for example, when you ask us to share your pet's profile with a vet or to apply for a care-funding program).</p>
+
+  <h3>Aggregated or de-identified insights</h3>
+  <p>We may share aggregated or de-identified information with partners to improve programs and matching. This information cannot reasonably be used to identify you, and partners are contractually prohibited from attempting to re-identify it.</p>
+
+  <h3>Service providers</h3>
+  <p>We use trusted providers for hosting, analytics, email delivery, and customer support. They process data only on our instructions and under written data processing agreements.</p>
+
+  <h3>Legal requirements</h3>
+  <p>We may disclose information if required by law, court order, or to protect the rights, safety, or property of our users or Palpawble.</p>
+
+  <h3>Business transfers</h3>
+  <p>If Palpawble is involved in a merger, acquisition, or sale of assets, your information may be transferred. We will notify you, and this policy will continue to protect your data.</p>
+
+  <p><strong>All partners and providers who receive personal data must</strong> use it only for the agreed purpose, apply appropriate security measures, not sell it or use it for their own unrelated marketing, and delete or return it when no longer needed.</p>
+  <p><strong>We do not sell, rent, or trade your personal data.</strong></p>
+
+  <h2 id="retention">6. How long we keep your information</h2>
+  <p>We keep personal data only as long as necessary for the purposes described in this policy:</p>
+  <ul>
+    <li><strong>Active accounts:</strong> for as long as your account remains open.</li>
+    <li><strong>Inactive accounts:</strong> if you have not logged in for 24 months, we will notify you and then delete or anonymise your account after 30 days if you do not respond.</li>
+    <li><strong>After account deletion:</strong> your personal data is deleted from our active systems within 30 days and from backups within 90 days.</li>
+    <li><strong>Legal exceptions:</strong> some records (such as billing or transaction records) may be kept longer where the law requires, for 7 years, and only for that purpose.</li>
+    <li><strong>Anonymised data:</strong> data that has been fully anonymised and can no longer identify you may be kept for analysis and service improvement.</li>
+  </ul>
+
+  <h2 id="your-rights">7. Your rights and choices</h2>
+  <p>Depending on where you live, you may have the right to:</p>
+  <ul>
+    <li><strong>Access</strong> the personal data we hold about you and receive a copy.</li>
+    <li><strong>Correct</strong> inaccurate or incomplete data.</li>
+    <li><strong>Delete</strong> your account and personal data at any time.</li>
+    <li><strong>Export</strong> your data in a portable format.</li>
+    <li><strong>Object to or restrict</strong> certain processing, including personalisation.</li>
+    <li><strong>Withdraw consent</strong> at any time, including consent for partner sharing and marketing.</li>
+    <li><strong>Request human review</strong> of automated matching results.</li>
+    <li><strong>Complain</strong> to your local data protection authority.</li>
+  </ul>
+  <p><strong>Deleting your account.</strong> You can delete your account at any time in your account settings, or by emailing <a href="mailto:welcome@uxbymia.com?subject=Delete%20my%20account">welcome@uxbymia.com</a>. Deletion is permanent. We will confirm once it is complete.</p>
+  <p>We respond to requests within 30 days. We may need to verify your identity before acting on a request.</p>
+
+  <h2 id="security">8. How we protect your information</h2>
+  <p>We use industry-standard measures to safeguard your data, including encryption in transit and at rest, role-based access controls limited to staff who need access, regular security reviews, and staff confidentiality obligations. If a data breach affects your personal information, we will notify you and the relevant authorities as required by law.</p>
+  <p>No system is completely secure, so please use a strong, unique password and keep your login details private.</p>
+
+  <h2 id="transfers">9. International transfers</h2>
+  <p>Your data may be stored or processed in countries other than your own. When we transfer data across borders, we use appropriate safeguards, such as Standard Contractual Clauses or equivalent mechanisms, to protect it.</p>
+
+  <h2 id="children">10. Children</h2>
+  <p>Palpawble is not intended for anyone under 18. We do not knowingly collect data from children. If you believe a child has provided us with data, contact us and we will delete it.</p>
+
+  <h2 id="changes">11. Changes to this policy</h2>
+  <p>We may update this policy from time to time. If we make significant changes, especially to how we share data, we will notify you by email or in the app before the changes take effect, and ask for your consent where required.</p>
+
+  <h2 id="contact">12. Contact us</h2>
+  <p>Questions, requests, or concerns: <a href="mailto:welcome@uxbymia.com?subject=Privacy">welcome@uxbymia.com</a></p>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+
+      <div class="footer-brand">
+        <!-- LOGO: replace this <a> with the logo code from your index.html for an exact match -->
+        <a class="brand" href="/" aria-label="Palpawble home">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="5" cy="10" rx="2.3" ry="2.8"/><ellipse cx="9.3" cy="5.6" rx="2.3" ry="2.8"/><ellipse cx="14.7" cy="5.6" rx="2.3" ry="2.8"/><ellipse cx="19" cy="10" rx="2.3" ry="2.8"/><path d="M12 11c-3.2 0-6.5 4.2-6.5 7.2 0 2 1.5 2.8 3.2 2.8 1.4 0 2.2-.7 3.3-.7s1.9.7 3.3.7c1.7 0 3.2-.8 3.2-2.8 0-3-3.3-7.2-6.5-7.2z"/></svg>
+          Palpawble
+        </a>
+        <p class="footer-tagline">Compassionate pet care navigation for families everywhere. Find care, access grants, and stay calm — at any hour.</p>
+        <div class="socials">
+          <!-- SOCIAL LINKS: replace # with your Instagram and LinkedIn URLs -->
+          <a href="#" aria-label="Palpawble on Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.3A4.7 4.7 0 1 0 16.7 12 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 3-3 3 3 0 0 1-3 3zm6-7.9a1.1 1.1 0 1 1-1.1-1.1A1.1 1.1 0 0 1 18 7.1zM21.9 8.2a5.4 5.4 0 0 0-1.5-3.8 5.4 5.4 0 0 0-3.8-1.5C15.1 2.8 8.9 2.8 7.4 2.9a5.4 5.4 0 0 0-3.8 1.5A5.4 5.4 0 0 0 2.1 8.2c-.1 1.5-.1 6.1 0 7.6a5.4 5.4 0 0 0 1.5 3.8 5.4 5.4 0 0 0 3.8 1.5c1.5.1 7.7.1 9.2 0a5.4 5.4 0 0 0 3.8-1.5 5.4 5.4 0 0 0 1.5-3.8c.1-1.5.1-6.1 0-7.6zm-2 9.3a3.1 3.1 0 0 1-1.7 1.7c-1.2.5-4 .4-6.2.4s-5 .1-6.2-.4a3.1 3.1 0 0 1-1.7-1.7c-.5-1.2-.4-4-.4-5.5s-.1-4.3.4-5.5a3.1 3.1 0 0 1 1.7-1.7c1.2-.5 4-.4 6.2-.4s5-.1 6.2.4a3.1 3.1 0 0 1 1.7 1.7c.5 1.2.4 4 .4 5.5s.1 4.3-.4 5.5z"/></svg>
+          </a>
+          <a href="#" aria-label="Palpawble on LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11.25H3zM9.5 9.75h3.8v1.54h.05a4.17 4.17 0 0 1 3.75-2.06c4 0 4.75 2.64 4.75 6.07V21h-4v-5.05c0-1.2 0-2.75-1.68-2.75s-1.93 1.31-1.93 2.66V21H9.5z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- LINKS: replace each # with the same link your landing page uses -->
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Care Finder</a></li>
+          <li><a href="#">Financial Hub</a></li>
+          <li><a href="#">Decision Guide</a></li>
+          <li><a href="#">Pet Profiles</a></li>
+          <li><a href="#">Fund Tracker</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="mailto:welcome@uxbymia.com?subject=Careers">Careers</a></li>
+          <li><a href="mailto:welcome@uxbymia.com?subject=Contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Centre</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Clinics: List yours</a></li>
+          <li><a href="#">Grant Providers</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Palpawble Inc. · All rights reserved</span>
+      <nav aria-label="Legal">
+        <a href="/privacy.html" aria-current="page">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Not medical advice</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
